@@ -41,6 +41,7 @@ official [documentation](https://restic.readthedocs.io/en/stable/030_preparing_a
 > the scope of this role.
 
 Available variables:
+
 | Name       | Required | Description                                                                                                                                                                                                                       |
 | ---------- |:--------:| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `location` |   yes    | The location of the Backend. Currently, [Local](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#local) and [SFTP](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#sftp) are supported |
@@ -62,6 +63,7 @@ A backup specifies a directory or file to be backuped. A backup is written to a
 Repository defined in `restic_repos`.
 
 Available variables:
+
 | Name             |           Required            | Description                                                                                                             |
 | ---------------- |:-----------------------------:| ----------------------------------------------------------------------------------------------------------------------- |
 | `name`           |              yes              | The name of this backup. Used together with pruning and needs to be unique.                                             |
