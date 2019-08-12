@@ -1,0 +1,8 @@
+---
+# defaults file for skeleton
+restic_version: '0.9.5'
+restic_install_dir: '/usr/bin'
+restic_script_dir: '~/restic'
+restic_repos: {}
+restic_backups: []
+restic_create_cron: false
