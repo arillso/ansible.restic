@@ -1,0 +1,32 @@
+---
+galaxy_info:
+  role_name: restic
+  author: Matthias Leutenegger
+  description: Role to deploy restic (https://restic.readthedocs.io) and setup backups.
+  # company: 
+  license: MIT
+  min_ansible_version: 2.8
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Fedora
+      versions:
+        - 29
+    - name: Ubuntu
+      versions:
+        - bionic
+        - cosmic
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+        - buster
+    - name: Windows
+      versions:
+        - all
+
+  galaxy_tags: []
+
+dependencies: []
