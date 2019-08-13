@@ -10,6 +10,10 @@ backups.
 This role installs restic on a client, configures the backup repositories
 and optionally sets up cronjobs to run said backups.
 Aditionally, it will setup executable scripts to run a Backup manually.
+
+> This Project borrows from the
+> [donat-b/ansible-restic](https://github.com/donat-b/ansible-restic)
+> ansible role.
 <!-- ## Installation
 
 ```bash
