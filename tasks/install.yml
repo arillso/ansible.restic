@@ -11,7 +11,9 @@
     force: True
   register: get_url_restic
 
-# TODO: This needs to become independent of the shell module to actually work on every system
+# TODO: This needs to become independent of the shell module to actually work
+# on every system. We could use a distribution specific aproach, but this would
+# conflict with the current structure in tasks/distribution/
 - name: Decompress the binary
   shell: "bzip2 -dc {{ get_url_restic.dest }} > {{ restic_download_path }}/bin/restic-{{ restic_version }}"
   args:
