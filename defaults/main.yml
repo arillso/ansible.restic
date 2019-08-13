@@ -1,8 +1,13 @@
 ---
 # defaults file for skeleton
+restic_url: ''
 restic_version: '0.9.5'
-restic_install_dir: '/usr/bin'
+restic_download_path: '/opt/restic'
+restic_install_path: '/usr/bin'
 restic_script_dir: '~/restic'
 restic_repos: {}
 restic_backups: []
 restic_create_cron: false
+
+restic_dir_owner: '{{ansible_user}}'
+restic_dir_group: '{{ansible_user}}'

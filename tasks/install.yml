@@ -1,0 +1,32 @@
+---
+- name: Set restic_url
+  set_fact:
+    restic_url: 'https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_{{ ansible_system | lower }}_{{ _platform_map[ansible_architecture] | default(ansible_architecture) }}.bz2'
+  when: restic_url == ''
+
+- name: Download client binary
+  get_url:
+    url: '{{ restic_url }}'
+    dest: '{{ restic_download_path }}/restic.bz2'
+    force: True
+  register: get_url_restic
+
+# TODO: This needs to become independent of the shell module to actually work on every system
+- name: Decompress the binary
+  shell: "bzip2 -dc {{ get_url_restic.dest }} > {{ restic_download_path }}/bin/restic-{{ restic_version }}"
+  args:
+    creates: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'
+
+- name: Ensure permissions are correct
+  file:
+    path: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'
+    mode: '0755'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
+
+- name: Create symbolic link to the correct version
+  file:
+    src: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'
+    path: '{{ restic_install_path }}/restic'
+    state: link
+    force: True
