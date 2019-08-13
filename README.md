@@ -11,9 +11,11 @@ This role installs restic on a client, configures the backup repositories
 and optionally sets up cronjobs to run said backups.
 Aditionally, it will setup executable scripts to run a Backup manually.
 
-> This Project borrows from the
+> This Project borrows heavily from the
 > [donat-b/ansible-restic](https://github.com/donat-b/ansible-restic)
-> ansible role.
+> ansible role. We try to make this role more semver deployment friendly
+> by allowing to use version tags and keep these snapshots and adapting the
+> automated backup definition for use with windows systems.
 <!-- ## Installation
 
 ```bash
@@ -24,14 +26,18 @@ ansible-galaxy install restic
 * bzip2
 ## Role Variables
 
-| Name                 | Default      | Description                                                                 |
-| -------------------- | ------------ | --------------------------------------------------------------------------- |
-| `restic_version`     | `'0.9.5'`    | The version of Restic to install                                            |
-| `restic_install_dir` | `'/usr/bin'` | Install location for the restic binary                                      |
-| `restic_script_dir`  | `'~/restic'` | Location of the generated backup scripts                                    |
-| `restic_repos`       | `{}`         | A dictionary of repositories where snapshots are stored                     |
-| `restic_backups`     | `[]`         | A list of dictionaries specifying the files and directories to be backed up |
-| `restic_create_cron` | `false`      | Should a cronjob be created for each backup                                 |
+| Name                   | Default              | Description                                                                 |
+| ---------------------- | -------------------- | --------------------------------------------------------------------------- |
+| `restic_url`           | `''`                 | The URL to download restic from. Use this variable to overwrite the default |
+| `restic_version`       | `'0.9.5'`            | The version of Restic to install                                            |
+| `restic_download_path` | `'/opt/restic'`      | Download location for the restic binary                                     |
+| `restic_install_path`   | `'/usr/local/bin'`   | Install location for the restic binary                                      |
+| `restic_script_dir`    | `'~/restic'`         | Location of the generated backup scripts                                    |
+| `restic_repos`         | `{}`                 | A dictionary of repositories where snapshots are stored                     |
+| `restic_backups`       | `[]`                 | A list of dictionaries specifying the files and directories to be backed up |
+| `restic_create_cron`   | `false`              | Should a cronjob be created for each backup                                 |
+| `restic_dir_owner`     | `'{{ansible_user}}'` | The owner of all created dirs                                               |
+| `restic_dir_group`     | `'{{ansible_user}}'` | The group of all created dirs                                               |
 
 ### Repos
 Restic stores data in repositories. You have to specify at least one repository
