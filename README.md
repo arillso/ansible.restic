@@ -56,6 +56,7 @@ Available variables:
 | ---------- |:--------:| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `location` |   yes    | The location of the Backend. Currently, [Local](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#local) and [SFTP](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html#sftp) are supported |
 | `password` |   yes    | The password used to secure this repository                                                                                                                                                                                       |
+| `init`     |    no    | Describes if the repository should be initialized or not. Use `false` if you are backuping to an already existing repo.                                                                                                           |
 
 Example:
 ```yaml
@@ -63,9 +64,11 @@ restic_repos:
   local:
     location: /srv/restic-repo
     password: securepassword1
+    init: true
   remote:
     location: sftp:user@host:/srv/restic-repo
     password: securepassword2
+    init: true
 ```
 
 ### Backups
