@@ -21,6 +21,37 @@ Aditionally, it will setup executable scripts to run a Backup manually.
 ```bash
 ansible-galaxy install restic
 ``` -->
+### Backup Scripts
+This role will create a backup script for each backup in the `restic_script_dir`.
+These executable scripts can be used to manually trigger a backup action, but
+are also used for automated backups if you hgave set `restic_create_cron` to true.
+make sure to not change the files manually, as this can interfere with your
+backups quite a bit.
+
+on Linux, if you want to take a manual snapshot, you can run the backup like this:
+```bash
+$ /path/to/backup/script/backup-example.sh
+```
+by default, such a snapshot will be given the tag `manual`, so you can distinguish
+them from automatically created snapshots. You can also append more tags by
+simply appending them:
+```bash
+$ /path/to/backup/script/backup-example.sh --tag deployment
+```
+
+### CRON / Scheduled Tasks
+In order to make use of defined backups, they can be automatically setup as
+scheduled tasks. You have to be aware of the fact that (on linux systems at
+least) you need to have administrator permissions for configuring such an action.
+
+If you cannot use the automatic creation of the tasks, you can still make use
+of the generated scripts. If you are for example on a shared hosting server
+and can define a cronjob via a webinterface, simply add each backup file to
+be executed. Make sure to prefix the command with `CRON=true` to imply that the
+snapshot was created via a scheduled task:
+```bash
+CRON=true /path/to/backup/script/backup-example.sh
+```
 
 ## Requirements
 * bzip2
@@ -31,7 +62,7 @@ ansible-galaxy install restic
 | `restic_url`           | `''`                 | The URL to download restic from. Use this variable to overwrite the default |
 | `restic_version`       | `'0.9.5'`            | The version of Restic to install                                            |
 | `restic_download_path` | `'/opt/restic'`      | Download location for the restic binary                                     |
-| `restic_install_path`   | `'/usr/local/bin'`   | Install location for the restic binary                                      |
+| `restic_install_path`  | `'/usr/local/bin'`   | Install location for the restic binary                                      |
 | `restic_script_dir`    | `'~/restic'`         | Location of the generated backup scripts                                    |
 | `restic_repos`         | `{}`                 | A dictionary of repositories where snapshots are stored                     |
 | `restic_backups`       | `[]`                 | A list of dictionaries specifying the files and directories to be backed up |
