@@ -1,6 +1,6 @@
 # Ansible Role: restic
 
-[![Build Status](https://img.shields.io/travis/projectgroup/ansible.projectname.svg?branch=master&style=popout-square)](https://travis-ci.org/projectgroup/ansible.projectname) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout-square)](https://sbaerlo.ch/licence) [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-projectname-blue.svg?style=popout-square)](https://galaxy.ansible.com/projectgroup/projectname) [![Ansible Role](https://img.shields.io/ansible/role/d/id.svg?style=popout-square)](https://galaxy.ansible.com/projectgroup/projectname)
+[![Build Status](https://img.shields.io/travis/arillso/ansible.restic.svg?branch=master&style=popout-square)](https://travis-ci.org/arillso/ansible.restic) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout-square)](https://sbaerlo.ch/licence) [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-restic-blue.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic) [![Ansible Role](https://img.shields.io/ansible/role/d/id.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic)
 
 ## Description
 [Restic](https://github.com/restic/restic) is a versatile Go based backup
