@@ -80,12 +80,20 @@ Available variables:
 | Name             |           Required            | Description                                                                                                             |
 | ---------------- |:-----------------------------:| ----------------------------------------------------------------------------------------------------------------------- |
 | `name`           |              yes              | The name of this backup. Used together with pruning and needs to be unique.                                             |
+| `repo`           |              yes              | The name of the repository to backup to.                                                                                |
 | `src`            |              yes              | The source directory or file                                                                                            |
 | `stdin`          |              no               | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)? |
 | `stdin_cmd`      | no (yes if `stdin` == `true`) | The command to produce the stdin.                                                                                       |
 | `stdin_filename` |              no               | The filename used in the repository.                                                                                    |
 | `tags`           |              no               | Array of default tags                                                                                                   |
-| `keep-last`      |              no               | If set, only keeps the last n snapshots.                                                                                                                        |
+| `keep_last`      |              no               | If set, only keeps the last n snapshots.                                                                                |
+| `keep_hourly`    |              no               | If set, only keeps the last n hourly snapshots.                                                                         |
+| `keep_daily`     |              no               | If set, only keeps the last n daily snapshots.                                                                          |
+| `keep_weekly `   |              no               | If set, only keeps the last n weekly snapshots.                                                                         |
+| `keep_monthly`   |              no               | If set, only keeps the last n monthly snapshots.                                                                        |
+| `keep_yearly `   |              no               | If set, only keeps the last n yearly snapshots.                                                                         |
+| `keep_within`    |              no               | If set, only keeps snapshots in this time period.                                                                       |
+| `keep_tag`       |              no               | If set, keep snapshots with this tags.                                                                                   |
 
 ## Dependencies
 none
