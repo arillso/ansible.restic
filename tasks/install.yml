@@ -8,7 +8,7 @@
   get_url:
     url: '{{ restic_url }}'
     dest: '{{ restic_download_path }}/restic.bz2'
-    force: True
+    force: true
   register: get_url_restic
 
 # TODO: This needs to become independent of the shell module to actually work
@@ -31,4 +31,5 @@
     src: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'
     path: '{{ restic_install_path }}/restic'
     state: link
-    force: True
+    force: true
+    

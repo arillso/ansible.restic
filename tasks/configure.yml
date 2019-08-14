@@ -4,7 +4,7 @@
   environment:
     RESTIC_REPOSITORY: '{{ item.value.location }}'
     RESTIC_PASSWORD: '{{ item.value.password }}'
-  no_log: True
+  no_log: true
   register: restic_init
   changed_when: "'created restic repository' in restic_init.stdout"
   failed_when:
@@ -14,4 +14,3 @@
   when:
     - item.value.init is defined
     - item.value.init == true
-
