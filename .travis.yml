@@ -19,7 +19,7 @@ install:
 
 before_script:
   - cd ../
-  - mv ansible.$ROLE_NAME projectgroup.$ROLE_NAME
+  - mv ansible.$ROLE_NAME arillso.$ROLE_NAME
   - cd projectgroup.$ROLE_NAME
 
 script:
