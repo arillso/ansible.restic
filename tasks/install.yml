@@ -32,4 +32,3 @@
     path: '{{ restic_install_path }}/restic'
     state: link
     force: true
-    
