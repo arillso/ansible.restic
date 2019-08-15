@@ -9,3 +9,5 @@ _platform_map:
 
 restic_create_paths:
   - '{{ restic_install_path }}/bin'
+
+restic_bin_bath: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'

@@ -1,7 +1,13 @@
 ---
 - name: Set restic_url
   set_fact:
-    restic_url: 'https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_{{ ansible_system | lower }}_{{ _platform_map[ansible_architecture] | default(ansible_architecture) }}.bz2'
+    restic_url_r: 'https://github.com/restic/restic/releases/download/'
+    arch: ansible_architecture
+    restic_platform: '{{ _platform_map[arch] | default(arch) }}'
+    restic_system: '{{ ansible_system | lower }}'
+    restic_url_v: 'v{{ restic_version }}/restic_{{ restic_version }}_'
+    restic_file: '{{ restic_system }}_{{ restic_platform }}.bz2'
+    restic_url: '{{ restic_url_r }}{{ restic_url_v }}{{ restic_file }}'
   when: restic_url == ''
 
 - name: Download client binary
@@ -15,7 +21,7 @@
 # on every system. We could use a distribution specific aproach, but this would
 # conflict with the current structure in tasks/distribution/
 - name: Decompress the binary
-  shell: "bzip2 -dc {{ get_url_restic.dest }} > {{ restic_download_path }}/bin/restic-{{ restic_version }}"
+  shell: "bzip2 -dc {{ get_url_restic.dest }} > {{ restic_bin_bath }}"
   args:
     creates: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'
 
