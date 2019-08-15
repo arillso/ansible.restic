@@ -20,11 +20,7 @@ Aditionally, it will setup executable scripts to run a Backup manually.
 > ansible role. We try to make this role more semver deployment friendly
 > by allowing to use version tags and keep these snapshots and adapting the
 > automated backup definition for use with windows systems.
-<!-- ## Installation
 
-```bash
-ansible-galaxy install restic
-``` -->
 ### Backup Scripts
 This role will create a backup script for each backup in the `restic_script_dir`.
 These executable scripts can be used to manually trigger a backup action, but
@@ -56,7 +52,11 @@ snapshot was created via a scheduled task:
 ```bash
 CRON=true /path/to/backup/script/backup-example.sh
 ```
+## Installation
 
+```bash
+ansible-galaxy install arillso.restic
+```
 ## Requirements
 * bzip2
 ## Role Variables
