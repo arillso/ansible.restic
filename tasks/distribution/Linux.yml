@@ -26,6 +26,7 @@
     month: '{{ schedule_month | default("*") }}'
     state: present
   become: true
+  no_log: true
   when:
     - restic_create_cron
     - item.name is defined
