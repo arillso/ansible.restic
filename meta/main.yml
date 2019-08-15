@@ -23,9 +23,9 @@ galaxy_info:
         - jessie
         - stretch
         - buster
-    - name: Windows
-      versions:
-        - all
+    # - name: Windows
+    #   versions:
+    #     - all
 
   galaxy_tags:
     - backup
