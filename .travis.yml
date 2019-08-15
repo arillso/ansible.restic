@@ -14,8 +14,11 @@ env:
 
 install:
   - pip install molecule docker
-
   - git clone https://github.com/arillso/tests molecule/default/lint
+addons:
+  apt:
+    packages:
+    - bzip2
 
 before_script:
   - cd ../
