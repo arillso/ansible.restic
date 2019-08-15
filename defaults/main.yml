@@ -1,6 +1,5 @@
 ---
 # defaults file for skeleton
-restic_url: ''
 restic_version: '0.9.5'
 restic_download_path: '/opt/restic'
 restic_install_path: '/usr/bin'

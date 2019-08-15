@@ -8,7 +8,7 @@
     restic_url_v: 'v{{ restic_version }}/restic_{{ restic_version }}_'
     restic_file: '{{ restic_system }}_{{ restic_platform }}.bz2'
     restic_url: '{{ restic_url_r }}{{ restic_url_v }}{{ restic_file }}'
-  when: restic_url == ''
+  when: restic_url is not defined
 
 - name: Download client binary
   get_url:

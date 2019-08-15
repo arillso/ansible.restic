@@ -63,7 +63,7 @@ CRON=true /path/to/backup/script/backup-example.sh
 
 | Name                   | Default              | Description                                                                 |
 | ---------------------- | -------------------- | --------------------------------------------------------------------------- |
-| `restic_url`           | `''`                 | The URL to download restic from. Use this variable to overwrite the default |
+| `restic_url`           | `undefined`          | The URL to download restic from. Use this variable to overwrite the default |
 | `restic_version`       | `'0.9.5'`            | The version of Restic to install                                            |
 | `restic_download_path` | `'/opt/restic'`      | Download location for the restic binary                                     |
 | `restic_install_path`  | `'/usr/local/bin'`   | Install location for the restic binary                                      |
