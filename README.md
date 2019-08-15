@@ -1,8 +1,6 @@
 # Ansible Role: restic
 
-> **Alpha:** This role is in alpha status and has not yet been released.
-> This means that certain features are not yet implemented or not yet fully
-> functional.
+> **Beta:** This role is in beta status.
 
 [![Build Status](https://img.shields.io/travis/arillso/ansible.restic.svg?branch=master&style=popout-square)](https://travis-ci.org/arillso/ansible.restic) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout-square)](https://sbaerlo.ch/licence) [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-restic-blue.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic) [![Ansible Role](https://img.shields.io/ansible/role/d/id.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic)
 
