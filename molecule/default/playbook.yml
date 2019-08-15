@@ -3,6 +3,11 @@
   hosts: all
   roles:
     - role: arillso.restic
+  pre_tasks:
+    - name: install bzip2
+      package:
+        name: bzip2
+        state: present
   vars:
     restic_download_path: ~/restic
     restic_install_path: ~/restic
