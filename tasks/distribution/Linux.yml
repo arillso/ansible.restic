@@ -13,5 +13,5 @@
   when:
     - item.name is defined
     - item.src is defined or item.stdin is defined
-    - item.src is defined or item.stdin == true and item.stdin_cmd is defined
+    - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
