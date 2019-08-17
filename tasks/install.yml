@@ -1,9 +1,4 @@
 ---
-- name: Set restic_url
-  set_fact:
-    restic_url: '{{ restic_url_r }}{{ restic_url_v }}{{ restic_file }}'
-  when: restic_url is not defined
-
 - name: Download client binary
   get_url:
     url: '{{ restic_url }}'
