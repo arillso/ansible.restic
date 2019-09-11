@@ -9,11 +9,18 @@ BACKUP_NAME={{ item.name }}
 {% if item.src is defined %}
 BACKUP_SOURCE={{ item.src }}
 {% endif %}
+set -euxo pipefail
 {#
   Define Tags
 #}
 {% macro tags(tags) -%}
-  {% if tags is defined %}{% for tag in tags %} --tag {{ tag }}{% endfor %}{% endif %}
+  {% if tags is defined and (tags|length>0) %}{% for tag in tags %} --tag {{ tag }}{% endfor %}{% endif %}
+{%- endmacro %}
+{#
+  Define Keeped Tags
+#}
+{% macro keep_tags(tags) -%}
+  {% if tags is defined and (tags|length>0) %}{% for tag in tags %} --keep-tag {{ tag }}{% endfor %}{% endif %}
 {%- endmacro %}
 {#
   Define Hostname
@@ -37,14 +44,14 @@ BACKUP_SOURCE={{ item.src }}
   Define retention pattern
 #}
 {% macro retention_pattern(repo) -%}
-  {% if repo.keep_last is defined %}--keep-last {{ item.keep_last }}{% endif %} \
-  {% if repo.keep_hourly is defined %}--keep-hourly {{ item.keep_hourly }}{% endif %} \
-  {% if repo.keep_daily is defined %}--keep-daily {{ item.keep_daily }}{% endif %} \
-  {% if repo.keep_weekly is defined %}--keep-weekly {{ item.keep_weekly }}{% endif %} \
-  {% if repo.keep_monthly is defined %}--keep-monthly {{ item.keep_monthly }}{% endif %} \
-  {% if repo.keep_yearly is defined %}--keep-yearly {{ item.keep_yearly }}{% endif %} \
-  {% if repo.keep_within is defined %}--keep-within {{ item.keep_within }}{% endif %} \
-  {% if repo.keep_tag is defined %}--keep-tag {{ item.keep_tag }}{% endif %}
+  {% if repo.keep_last is defined and repo.keep_last != None %}--keep-last {{ item.keep_last }}{% endif %} \
+  {% if repo.keep_hourly is defined and repo.keep_hourly != None %}--keep-hourly {{ item.keep_hourly }}{% endif %} \
+  {% if repo.keep_daily is defined and repo.keep_daily != None %}--keep-daily {{ item.keep_daily }}{% endif %} \
+  {% if repo.keep_weekly is defined and repo.keep_weekly != None %}--keep-weekly {{ item.keep_weekly }}{% endif %} \
+  {% if repo.keep_monthly is defined and repo.keep_monthly != None %}--keep-monthly {{ item.keep_monthly }}{% endif %} \
+  {% if repo.keep_yearly is defined and repo.keep_yearly != None %}--keep-yearly {{ item.keep_yearly }}{% endif %} \
+  {% if repo.keep_within is defined and repo.keep_within != None %}--keep-within {{ item.keep_within }}{% endif %} \
+  {% if repo.keep_tag is defined and (repo.keep_tag|length>0) %}{{ keep_tags(repo.keep_tag) }}{% endif %}
 {%- endmacro %}
 {#
   Define backup commands

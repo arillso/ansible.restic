@@ -112,7 +112,7 @@ Available variables:
 
 | Name               |      Required (Default)       | Description                                                                                                             |
 | ------------------ |:-----------------------------:| ----------------------------------------------------------------------------------------------------------------------- |
-| `name`             |              yes              | The name of this backup. Used together with pruning and scheduling and needs to be unique.                                             |
+| `name`             |              yes              | The name of this backup. Used together with pruning and scheduling and needs to be unique.                              |
 | `repo`             |              yes              | The name of the repository to backup to.                                                                                |
 | `src`              |              yes              | The source directory or file                                                                                            |
 | `stdin`            |              no               | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)? |
@@ -126,7 +126,7 @@ Available variables:
 | `keep_monthly`     |              no               | If set, only keeps the last n monthly snapshots.                                                                        |
 | `keep_yearly `     |              no               | If set, only keeps the last n yearly snapshots.                                                                         |
 | `keep_within`      |              no               | If set, only keeps snapshots in this time period.                                                                       |
-| `keep_tag`         |              no               | If set, keep snapshots with this tags.                                                                                  |
+| `keep_tag`         |              no               | If set, keep snapshots with this tags. Make sure to specify a list.                                                     | 
 | `scheduled`        |         no (`false`)          | If `restic_create_cron` is set to `true`, this backup is scheduled.                                                     |
 | `schedule_minute`  |           no (`*`)            | Minute when the job is run. ( 0-59, *, */2, etc )                                                                       |
 | `schedule_hour`    |           no (`*`)            | Hour when the job is run. ( 0-23, *, */2, etc )                                                                         |
