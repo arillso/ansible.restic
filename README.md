@@ -20,9 +20,9 @@ Aditionally, it will setup executable scripts to run a Backup manually.
 > automated backup definition for use with windows systems.
 
 ### Backup Scripts
-This role will create a backup script for each backup in the `restic_script_dir`.
+This role will create a backup script and a file with credentials usable with the `source` command on linux for each backup in the `restic_script_dir`.
 These executable scripts can be used to manually trigger a backup action, but
-are also used for automated backups if you hgave set `restic_create_cron` to true.
+are also used for automated backups if you have set `restic_create_cron` to true.
 make sure to not change the files manually, as this can interfere with your
 backups quite a bit.
 
@@ -126,7 +126,7 @@ Available variables:
 | `keep_monthly`     |              no               | If set, only keeps the last n monthly snapshots.                                                                        |
 | `keep_yearly `     |              no               | If set, only keeps the last n yearly snapshots.                                                                         |
 | `keep_within`      |              no               | If set, only keeps snapshots in this time period.                                                                       |
-| `keep_tag`         |              no               | If set, keep snapshots with this tags. Make sure to specify a list.                                                     | 
+| `keep_tag`         |              no               | If set, keep snapshots with this tags. Make sure to specify a list.                                                     |
 | `scheduled`        |         no (`false`)          | If `restic_create_cron` is set to `true`, this backup is scheduled.                                                     |
 | `schedule_minute`  |           no (`*`)            | Minute when the job is run. ( 0-59, *, */2, etc )                                                                       |
 | `schedule_hour`    |           no (`*`)            | Hour when the job is run. ( 0-23, *, */2, etc )                                                                         |

@@ -1,7 +1,6 @@
 # {{ ansible_managed }}
 # Backup script for {{ item.src|default('stdin') }}
-# Use this file to create a Backup and prune existing data.
-set -euxo pipefail
+# Use this file to create a Backup and prune existing data with one execution.
 
 export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
 export RESTIC_PASSWORD={{ restic_repos[item.repo].password }}

@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+# Backup credentials for {{ item.src|default('stdin') }}
+# Source this file to work with restic on this host
+
+export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
+export RESTIC_PASSWORD={{ restic_repos[item.repo].password }}
+BACKUP_NAME={{ item.name }}
+{% if item.src is defined %}
+BACKUP_SOURCE={{ item.src }}
+{% endif %}
