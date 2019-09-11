@@ -2,7 +2,7 @@
 
 > **Beta:** This role is in beta status.
 
-[![Build Status](https://img.shields.io/travis/arillso/ansible.restic.svg?branch=master&style=popout-square)](https://travis-ci.org/arillso/ansible.restic) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout-square)](https://sbaerlo.ch/licence) [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-restic-blue.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic) [![Ansible Role](https://img.shields.io/ansible/role/d/id.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic)
+[![Build Status](https://img.shields.io/travis/arillso/ansible.restic.svg?branch=master&style=popout-square)](https://travis-ci.org/arillso/ansible.restic) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout-square)](https://sbaerlo.ch/licence) [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-restic-blue.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic) [![Ansible Role](https://img.shields.io/ansible/role/d/42773.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic)
 
 ## Description
 [Restic](https://github.com/restic/restic) is a versatile Go based backup
@@ -127,7 +127,7 @@ Available variables:
 | `keep_yearly `     |              no               | If set, only keeps the last n yearly snapshots.                                                                                                                              |
 | `keep_within`      |              no               | If set, only keeps snapshots in this time period.                                                                                                                            |
 | `keep_tag`         |              no               | If set, keep snapshots with this tags. Make sure to specify a list.                                                                                                          |
-| `prune`            |         no (`false`)          | If `true`, the `restic forget` command in the script has the [`--prune` option](https://restic.readthedocs.io/en/stable/060_forget.html#removing-backup-snapshots) appended. | 
+| `prune`            |         no (`false`)          | If `true`, the `restic forget` command in the script has the [`--prune` option](https://restic.readthedocs.io/en/stable/060_forget.html#removing-backup-snapshots) appended. |
 | `scheduled`        |         no (`false`)          | If `restic_create_cron` is set to `true`, this backup is scheduled.                                                                                                          |
 | `schedule_minute`  |           no (`*`)            | Minute when the job is run. ( 0-59, *, */2, etc )                                                                                                                            |
 | `schedule_hour`    |           no (`*`)            | Hour when the job is run. ( 0-23, *, */2, etc )                                                                                                                              |
