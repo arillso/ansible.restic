@@ -4,6 +4,12 @@
 
 export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
 export RESTIC_PASSWORD={{ restic_repos[item.repo].password }}
+{% if restic_repos[item.repo].aws_access_key is defined %}
+AWS_ACCESS_KEY_ID={{ restic_repos[item.repo].aws_access_key }}
+{% endif %}
+{% if restic_repos[item.repo].aws_secret_access_key is defined %}
+AWS_SECRET_ACCESS_KEY={{ restic_repos[item.repo].aws_secret_access_key }}
+{% endif %}
 BACKUP_NAME={{ item.name }}
 {% if item.src is defined %}
 BACKUP_SOURCE={{ item.src }}
