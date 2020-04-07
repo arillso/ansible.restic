@@ -35,10 +35,10 @@
   cron:
     name: 'arillso.restic backup {{ item.name }}'
     job: 'CRON=true {{ restic_script_dir }}/backup-{{ item.name }}.sh'
-    minute: '{{ schedule_minute | default("*") }}'
-    hour: '{{ schedule_hour | default("*") }}'
-    weekday: '{{ schedule_weekday | default("*") }}'
-    month: '{{ schedule_month | default("*") }}'
+    minute: '{{ item.schedule_minute | default("*") }}'
+    hour: '{{ item.schedule_hour | default("*") }}'
+    weekday: '{{ item.schedule_weekday | default("*") }}'
+    month: '{{ item.schedule_month | default("*") }}'
     state: present
   become: true
   no_log: true
