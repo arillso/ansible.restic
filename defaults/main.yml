@@ -1,7 +1,7 @@
 ---
 # defaults file for skeleton
 restic_url: '{{ restic_url_default }}'
-restic_version: '0.9.5'
+restic_version: '0.9.6'
 restic_download_path: '/opt/restic'
 restic_install_path: '/usr/bin'
 restic_script_dir: '~/restic'
