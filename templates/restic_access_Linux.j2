@@ -11,6 +11,9 @@ AWS_ACCESS_KEY_ID={{ restic_repos[item.repo].aws_access_key }}
 {% if restic_repos[item.repo].aws_secret_access_key is defined %}
 AWS_SECRET_ACCESS_KEY={{ restic_repos[item.repo].aws_secret_access_key }}
 {% endif %}
+{% if restic_repos[item.repo].aws_default_region is defined %}
+AWS_DEFAULT_REGION={{ restic_repos[item.repo].aws_default_region }}
+{% endif %}
 BACKUP_NAME={{ item.name }}
 {% if item.src is defined %}
 BACKUP_SOURCE={{ item.src }}
