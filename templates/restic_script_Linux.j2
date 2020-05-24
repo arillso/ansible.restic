@@ -7,13 +7,13 @@ export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
 export RESTIC_PASSWORD={{ restic_repos[item.repo].password }}
 BACKUP_NAME={{ item.name }}
 {% if restic_repos[item.repo].aws_access_key is defined %}
-AWS_ACCESS_KEY_ID={{ restic_repos[item.repo].aws_access_key }}
+export AWS_ACCESS_KEY_ID={{ restic_repos[item.repo].aws_access_key }}
 {% endif %}
 {% if restic_repos[item.repo].aws_secret_access_key is defined %}
-AWS_SECRET_ACCESS_KEY={{ restic_repos[item.repo].aws_secret_access_key }}
+export AWS_SECRET_ACCESS_KEY={{ restic_repos[item.repo].aws_secret_access_key }}
 {% endif %}
 {% if restic_repos[item.repo].aws_default_region is defined %}
-AWS_DEFAULT_REGION={{ restic_repos[item.repo].aws_default_region }}
+export AWS_DEFAULT_REGION={{ restic_repos[item.repo].aws_default_region }}
 {% endif %}
 {% if item.src is defined %}
 BACKUP_SOURCE={{ item.src }}
