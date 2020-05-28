@@ -92,6 +92,7 @@ Available variables:
 | `init`                  |    no    | Describes if the repository should be initialized or not. Use `false` if you are backuping to an already existing repo.                                                                                                                                                                                                 |
 | `aws_access_key`        |    no    | The access key for the S3 backend                                                                                                                                                                                                                                                                                       |
 | `aws_secret_access_key` |    no    | The secret access key for the S3 backend                                                                                                                                                                                                                                                                                                                        |
+| `aws_default_region` |    no    | The desired region for the S3 backend                                                                                                                                                                                                                                                                                                                        |
 
 Example:
 ```yaml
