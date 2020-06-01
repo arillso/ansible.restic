@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+## [0.2.4] - 2020-06-01
 ### Added
 * `aws_default_region` for repos
 ## 0.2.3 - 2020-05-18
@@ -58,7 +59,8 @@ and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 * initial release
 
 
-[Unreleased]: https://github.com/arillso/ansible.restic/compare/0.2.3...HEAD
+[Unreleased]: https://github.com/arillso/ansible.restic/compare/0.2.4...HEAD
+[0.2.4]: https://github.com/arillso/ansible.restic/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/arillso/ansible.restic/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/arillso/ansible.restic/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/arillso/ansible.restic/compare/0.2.0...0.2.1
