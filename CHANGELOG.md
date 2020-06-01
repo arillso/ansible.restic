@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+### Changed
+* Password now use `regex_escape()` filter in templates
+
 ## [0.2.4] - 2020-06-01
 ### Added
 * `aws_default_region` for repos
