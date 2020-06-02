@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+### Fixed:
+* AWS credentials are now supplied to the initialising step
+* Cronjob step does not fail if `scheduled` parameter is not set on repo
+* init respects `'config already initialized'` string
+
 ## [0.2.4] - 2020-06-01
 ### Added
 * `aws_default_region` for repos
