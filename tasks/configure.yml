@@ -5,7 +5,10 @@
     RESTIC_REPOSITORY: '{{ item.value.location }}'
     RESTIC_PASSWORD: '{{ item.value.password }}'
     AWS_ACCESS_KEY_ID: '{{ item.value.aws_access_key | default("") }}'
-    AWS_SECRET_ACCESS_KEY: '{{ item.value.aws_secret_access_key | default("") }}'
+    AWS_SECRET_ACCESS_KEY: '{{
+      item.value.aws_secret_access_key
+      | default("")
+    }}'
     AWS_DEFAULT_REGION: '{{ item.value.aws_default_region | default("") }}'
   no_log: true
   register: restic_init
