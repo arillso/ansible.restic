@@ -13,6 +13,7 @@
   failed_when:
     - restic_init.rc != 0
     - not 'config file already exists' in restic_init.stderr
+    - not 'config already initialized' in restic_init.stderr
   loop: "{{ restic_repos|dict2items }}"
   when:
     - item.value.init is defined

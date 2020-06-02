@@ -7,6 +7,7 @@ and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed:
 * AWS credentials are now supplied to the initialising step
 * Cronjob step does not fail if `scheduled` parameter is not set on repo
+* init respects `'config already initialized'` string
 
 ## [0.2.4] - 2020-06-01
 ### Added
