@@ -45,5 +45,5 @@
   when:
     - restic_create_cron
     - item.name is defined
-    - item.scheduled
+    - item.scheduled | default(false)
   with_items: '{{ restic_backups }}'
