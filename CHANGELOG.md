@@ -7,6 +7,12 @@ and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 * Password now use `regex_escape()` filter in templates
 
+## [0.2.5] - 2020-06-02
+### Fixed:
+* AWS credentials are now supplied to the initialising step
+* Cronjob step does not fail if `scheduled` parameter is not set on repo
+* init respects `'config already initialized'` string
+
 ## [0.2.4] - 2020-06-01
 ### Added
 * `aws_default_region` for repos
@@ -62,7 +68,8 @@ and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 * initial release
 
 
-[Unreleased]: https://github.com/arillso/ansible.restic/compare/0.2.4...HEAD
+[Unreleased]: https://github.com/arillso/ansible.restic/compare/0.2.5...HEAD
+[0.2.5]: https://github.com/arillso/ansible.restic/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/arillso/ansible.restic/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/arillso/ansible.restic/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/arillso/ansible.restic/compare/0.2.1...0.2.2
