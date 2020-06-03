@@ -9,7 +9,7 @@ export RESTIC_PASSWORD='{{ restic_repos[item.repo].password | regex_replace('\''
 export AWS_ACCESS_KEY_ID={{ restic_repos[item.repo].aws_access_key }}
 {% endif %}
 {% if restic_repos[item.repo].aws_secret_access_key is defined %}
-export AWS_SECRET_ACCESS_KEY="{{ restic_repos[item.repo].aws_secret_access_key | regex_escape() }}"
+export AWS_SECRET_ACCESS_KEY="{{ restic_repos[item.repo].aws_secret_access_key | regex_replace('\'', '\'\\\'\'') }}"
 {% endif %}
 {% if restic_repos[item.repo].aws_default_region is defined %}
 export AWS_DEFAULT_REGION={{ restic_repos[item.repo].aws_default_region }}
