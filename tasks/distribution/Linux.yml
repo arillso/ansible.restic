@@ -4,46 +4,74 @@
 - name: Create backup credentials
   template:
     src: restic_access_Linux.j2
-    dest: '{{ restic_script_dir }}/access-{{ item.name }}.sh'
+    dest: '{{ restic_script_dir }}/access-{{ item.value.name }}.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
-  no_log: true
-  with_items: '{{ restic_backups }}'
+  with_dict: '{{ restic_backups }}'
   when:
-    - item.name is defined
-    - item.src is defined or item.stdin is defined
-    - item.src is defined or item.stdin and item.stdin_cmd is defined
-    - item.repo in restic_repos
+    - item.value.name is defined
+    - item.value.src is defined or item.value.stdin is defined
+    - item.value.src is defined or item.value.stdin and item.value.stdin_cmd is defined
+    - item.value.repo in restic_repos
+  loop_control:
+    label: '{{ item.value.name }}'
 
 - name: Create backup script
   template:
     src: restic_script_Linux.j2
-    dest: '{{ restic_script_dir }}/backup-{{ item.name }}.sh'
+    dest: '{{ restic_script_dir }}/backup-{{ item.value.name }}.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
-  no_log: true
-  with_items: '{{ restic_backups }}'
+  with_dict: '{{ restic_backups }}'
   when:
-    - item.name is defined
-    - item.src is defined or item.stdin is defined
-    - item.src is defined or item.stdin and item.stdin_cmd is defined
-    - item.repo in restic_repos
+    - item.value.name is defined
+    - item.value.src is defined or item.value.stdin is defined
+    - item.value.src is defined or item.value.stdin and item.value.stdin_cmd is defined
+    - item.value.repo in restic_repos
+  loop_control:
+    label: '{{ item.value.name }}'
+
+- name: Create restore script
+  template:
+    src: restic_restore_Linux.j2
+    dest: '{{ restic_script_dir }}/restore-{{ item.value.name }}.sh'
+    mode: '0700'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
+  with_dict: '{{ restic_backups }}'
+  when:
+    - item.value.name is defined
+    - item.value.src is defined or item.value.stdin is defined
+    - item.value.src is defined or item.value.stdin and item.value.stdin_cmd is defined
+    - item.value.repo in restic_repos
+  loop_control:
+    label: '{{ item.value.name }}'
+
 
 - name: Setup CRON jobs
   cron:
-    name: 'arillso.restic backup {{ item.name }}'
-    job: 'CRON=true {{ restic_script_dir }}/backup-{{ item.name }}.sh'
-    minute: '{{ item.schedule_minute | default("*") }}'
-    hour: '{{ item.schedule_hour | default("*") }}'
-    weekday: '{{ item.schedule_weekday | default("*") }}'
-    month: '{{ item.schedule_month | default("*") }}'
+    name: 'restic-{{ item.value.name }}'
+    job: 'CRON=true {{ restic_script_dir }}/backup-{{ item.value.name }}.sh'
+    minute: '{{ item.value.schedule_minute | default("*") }}'
+    hour: '{{ item.value.schedule_hour | default("*") }}'
+    weekday: '{{ item.value.schedule_weekday | default("*") }}'
+    month: '{{ item.value.schedule_month | default("*") }}'
+    user: '{{ item.value.user | default("root") }}'
     state: present
+    cron_file: 'restic-{{ item.value.name }}'
   become: true
-  no_log: true
   when:
     - restic_create_cron
-    - item.name is defined
-    - item.scheduled | default(false)
-  with_items: '{{ restic_backups }}'
+    - item.value.name is defined
+    - item.value.scheduled | default(false)
+  with_dict: '{{ restic_backups }}'
+  loop_control:
+    label: '{{ item.value.name }}'
+
+- include: restic_auto_restore.yml
+  with_dict: "{{ restic_backups }}"
+  loop_control:
+    loop_var: restic_backups_loop
+

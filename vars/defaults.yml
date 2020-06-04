@@ -10,6 +10,7 @@ _platform_map:
 restic_create_paths:
   - '{{ restic_download_path }}/bin'
   - '{{ restic_script_dir }}'
+  - '{{ restic_auto_restore_dir }}'
 
 restic_bin_bath: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'
 
