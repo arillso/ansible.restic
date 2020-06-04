@@ -37,6 +37,18 @@ simply appending them:
 $ /path/to/backup/script/backup-example.sh --tag deployment
 ```
 
+### Access scripts
+```bash
+. /path/to/backup/script/access-example.sh
+restic snapshots
+```
+
+### Restore scripts
+```bash
+# This will restore the latest backup
+/path/to/backup/script/restore-example.sh
+```
+
 ### CRON / Scheduled Tasks
 In order to make use of defined backups, they can be automatically setup as
 scheduled tasks. You have to be aware of the fact that (on linux systems at
@@ -105,6 +117,31 @@ restic_repos:
     location: sftp:user@host:/srv/restic-repo
     password: securepassword2
     init: true
+  remote_foobar_s3:
+    location: "s3:s3.amazonaws.com/foobar"
+    password: securepassword3
+    init: true
+    aws_access_key: "{{ access_key_from_vault }}"
+    aws_secret_access_key: "{{ secret_access_key_from_vault }}"
+    aws_default_region: us-east-2
+
+restic_backups:
+  data:
+    name: data
+    src: /data
+    repo: remote_foobar_s3 # NOTE: this must match a key in the restic_repos dict
+    auto_restore: true
+    scheduled: true
+    schedule_minute: 1
+    schedule_hour: "{{ 24 | random(seed=inventory_hostname) }}"
+    schedule_weekday: '*'
+    schedule_month: '*'
+    prune: yes
+    keep_daily: 7
+    keep_weekly: 1
+    keep_monthly: 1
+    keep_yearly: 1
+
 ```
 
 ### Backups
@@ -118,6 +155,7 @@ Available variables:
 | `name`             |              yes              | The name of this backup. Used together with pruning and scheduling and needs to be unique.                                                                                   |
 | `repo`             |              yes              | The name of the repository to backup to.                                                                                                                                     |
 | `src`              |              yes              | The source directory or file                                                                                                                                                 |
+| `auto_restore`     |              no               | This will auto restore the latest backup in the event that a state file does not exist in /var/restic-auto-restore                                                           |
 | `stdin`            |              no               | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)?                                                      |
 | `stdin_cmd`        | no (yes if `stdin` == `true`) | The command to produce the stdin.                                                                                                                                            |
 | `stdin_filename`   |              no               | The filename used in the repository.                                                                                                                                         |

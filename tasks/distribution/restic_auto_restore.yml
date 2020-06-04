@@ -1,0 +1,11 @@
+- name: "check for a state file {{ restic_auto_restore_dir }}/{{ restic_backups_loop.value.name }}.state"
+  stat:
+    path: "{{ restic_auto_restore_dir }}/{{ restic_backups_loop.value.name }}.state"
+  register: restic_restore_state_file
+  when: restic_backups_loop.value.auto_restore is defined
+
+- name: "run restore if {{ restic_auto_restore_dir }}/{{ restic_backups_loop.value.name }}.state and auto restore is set"
+  shell: "{{ restic_script_dir }}/restore-{{ restic_backups_loop.value.name }}.sh && touch {{ restic_auto_restore_dir }}/{{ restic_backups_loop.value.name }}.state"
+  when: not restic_restore_state_file.stat.exists and restic_backups_loop.value.auto_restore is defined
+
+

@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 # {{ ansible_managed }}
-# Backup script for {{ item.src|default('stdin') }}
+# Backup script for {{ item.value.src|default('stdin') }}
 # Use this file to create a Backup and prune existing data with one execution.
 
-export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
-export RESTIC_PASSWORD={{ restic_repos[item.repo].password }}
-BACKUP_NAME={{ item.name }}
-{% if restic_repos[item.repo].aws_access_key is defined %}
-export AWS_ACCESS_KEY_ID={{ restic_repos[item.repo].aws_access_key }}
+export RESTIC_REPOSITORY={{ restic_repos[item.value.repo].location }}
+export RESTIC_PASSWORD={{ restic_repos[item.value.repo].password }}
+BACKUP_NAME={{ item.value.name }}
+{% if restic_repos[item.value.repo].aws_access_key is defined %}
+export AWS_ACCESS_KEY_ID={{ restic_repos[item.value.repo].aws_access_key }}
 {% endif %}
-{% if restic_repos[item.repo].aws_secret_access_key is defined %}
-export AWS_SECRET_ACCESS_KEY={{ restic_repos[item.repo].aws_secret_access_key }}
+{% if restic_repos[item.value.repo].aws_secret_access_key is defined %}
+export AWS_SECRET_ACCESS_KEY={{ restic_repos[item.value.repo].aws_secret_access_key }}
 {% endif %}
-{% if restic_repos[item.repo].aws_default_region is defined %}
-export AWS_DEFAULT_REGION={{ restic_repos[item.repo].aws_default_region }}
+{% if restic_repos[item.value.repo].aws_default_region is defined %}
+export AWS_DEFAULT_REGION={{ restic_repos[item.value.repo].aws_default_region }}
 {% endif %}
-{% if item.src is defined %}
-BACKUP_SOURCE={{ item.src }}
+{% if item.value.src is defined %}
+BACKUP_SOURCE={{ item.value.src }}
 {% endif %}
 set -euxo pipefail
 {#
@@ -53,13 +53,13 @@ set -euxo pipefail
   Define retention pattern
 #}
 {% macro retention_pattern(repo) -%}
-  {% if repo.keep_last is defined and repo.keep_last != None %}--keep-last {{ item.keep_last }}{% endif %} \
-  {% if repo.keep_hourly is defined and repo.keep_hourly != None %}--keep-hourly {{ item.keep_hourly }}{% endif %} \
-  {% if repo.keep_daily is defined and repo.keep_daily != None %}--keep-daily {{ item.keep_daily }}{% endif %} \
-  {% if repo.keep_weekly is defined and repo.keep_weekly != None %}--keep-weekly {{ item.keep_weekly }}{% endif %} \
-  {% if repo.keep_monthly is defined and repo.keep_monthly != None %}--keep-monthly {{ item.keep_monthly }}{% endif %} \
-  {% if repo.keep_yearly is defined and repo.keep_yearly != None %}--keep-yearly {{ item.keep_yearly }}{% endif %} \
-  {% if repo.keep_within is defined and repo.keep_within != None %}--keep-within {{ item.keep_within }}{% endif %} \
+  {% if repo.keep_last is defined and repo.keep_last != None %}--keep-last {{ item.value.keep_last }}{% endif %} \
+  {% if repo.keep_hourly is defined and repo.keep_hourly != None %}--keep-hourly {{ item.value.keep_hourly }}{% endif %} \
+  {% if repo.keep_daily is defined and repo.keep_daily != None %}--keep-daily {{ item.value.keep_daily }}{% endif %} \
+  {% if repo.keep_weekly is defined and repo.keep_weekly != None %}--keep-weekly {{ item.value.keep_weekly }}{% endif %} \
+  {% if repo.keep_monthly is defined and repo.keep_monthly != None %}--keep-monthly {{ item.value.keep_monthly }}{% endif %} \
+  {% if repo.keep_yearly is defined and repo.keep_yearly != None %}--keep-yearly {{ item.value.keep_yearly }}{% endif %} \
+  {% if repo.keep_within is defined and repo.keep_within != None %}--keep-within {{ item.value.keep_within }}{% endif %} \
   {% if repo.keep_tag is defined and (repo.keep_tag|length>0) %}{{ keep_tags(repo.keep_tag) }}{% endif %}
 {%- endmacro %}
 {#
@@ -70,12 +70,12 @@ if [[ -z ${CRON+x} ]]; then
 else
   MODE_TAG="--tag cron"
 fi
-{% if item.stdin is defined and item.stdin == true %}
-  {{ item.stdin_cmd }} | {{ restic_install_path }}/restic backup --stdin $MODE_TAG {{ tags(item.tags) }} {{ stdin_filename(item.stdin_filename) }} $@
+{% if item.value.stdin is defined and item.value.stdin == true %}
+  {{ item.value.stdin_cmd }} | {{ restic_install_path }}/restic backup --stdin $MODE_TAG {{ tags(item.value.tags) }} {{ stdin_filename(item.value.stdin_filename) }} $@
 {% else %}
-  {{ restic_install_path }}/restic backup $BACKUP_SOURCE $MODE_TAG {{ tags(item.tags) }} $@
+  {{ restic_install_path }}/restic backup $BACKUP_SOURCE $MODE_TAG {{ tags(item.value.tags) }} $@
 {% endif %}
 {#
   Define stdin forget commands
 #}
-{{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %}
+{{ restic_install_path }}/restic forget --path {{ path(item.value) }} {{ retention_pattern(item.value) }} {% if item.value.prune is defined and item.value.prune == true %}--prune{% endif %}
