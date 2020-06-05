@@ -62,6 +62,32 @@ set -euxo pipefail
   {% if repo.keep_within is defined and repo.keep_within != None %}--keep-within {{ item.keep_within }}{% endif %} \
   {% if repo.keep_tag is defined and (repo.keep_tag|length>0) %}{{ keep_tags(repo.keep_tag) }}{% endif %}
 {%- endmacro %}
+
+{% macro exclude(exclude) %}
+    {% if exclude.exclude_cache is defined and exclude.exclude_cache == true %}
+        --exclude-cache \
+    {% endif %}
+    {% if exclude.exclude is defined %}
+        {% for path in exclude.exclude %}
+            --exclude {{ path }} \
+        {% endfor %}
+    {% endif %}
+    {% if exclude.iexclude is defined %}
+        {% for path in exclude.iexclude %}
+            --iexclude {{ path }} \
+        {% endfor %}
+    {% endif %}
+    {% if exclude.exclude_file is defined %}
+        {% for path in exclude.exclude_file %}
+            --exclude-file {{ path }} \
+        {% endfor %}
+    {% endif %}
+    {% if exclude.exclude_if_present is defined %}
+        {% for path in exclude.exclude_if_present %}
+            --exclude-if-present {{ path }} \
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
 {#
   Define backup commands
 #}
@@ -73,7 +99,10 @@ fi
 {% if item.stdin is defined and item.stdin == true %}
   {{ item.stdin_cmd }} | {{ restic_install_path }}/restic backup --stdin $MODE_TAG {{ tags(item.tags) }} {{ stdin_filename(item.stdin_filename) }} $@
 {% else %}
-  {{ restic_install_path }}/restic backup $BACKUP_SOURCE $MODE_TAG {{ tags(item.tags) }} $@
+  {{ restic_install_path }}/restic backup $BACKUP_SOURCE $MODE_TAG \
+    {{ tags(item.tags) }} \
+    {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
+    $@
 {% endif %}
 {#
   Define stdin forget commands
