@@ -6,6 +6,7 @@ and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 ## Unreleased
 ### Added
 * Config option to exclude files
+* Contributing guide
 
 ## [0.2.6] 2020-06-05
 ### Changed
