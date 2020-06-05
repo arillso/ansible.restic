@@ -154,7 +154,7 @@ exclude:
         - /path/to/file
 ```
 Please refer to the use of the specific keys to the
-[documentation](https://restic.readthedocs.io/en/latest/040_backup.html#excluding-files ).
+[documentation](https://restic.readthedocs.io/en/latest/040_backup.html#excluding-files).
 
 ## Dependencies
 none
