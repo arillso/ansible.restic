@@ -75,7 +75,7 @@ and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 
 
 [Unreleased]: https://github.com/arillso/ansible.restic/compare/0.2.7...HEAD
-[0.2.6]: https://github.com/arillso/ansible.restic/compare/0.2.6...0.2.7
+[0.2.7]: https://github.com/arillso/ansible.restic/compare/0.2.6...0.2.7
 [0.2.6]: https://github.com/arillso/ansible.restic/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/arillso/ansible.restic/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/arillso/ansible.restic/compare/0.2.3...0.2.4
