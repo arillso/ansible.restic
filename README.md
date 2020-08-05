@@ -136,6 +136,25 @@ Available variables:
 | `schedule_hour`    |           no (`*`)            | Hour when the job is run. ( 0-23, *, */2, etc )                                                                                                                              |
 | `schedule_weekday` |           no (`*`)            | Weekday when the job is run.  ( 0-6 for Sunday-Saturday, *, etc )                                                                                                            |
 | `schedule_month`   |           no (`*`)            | Month when the job is run. ( 1-12, *, */2, etc )                                                                                                                             |
+| `exclude`          |           no (`{}`)           | Allows you to specify files to exclude. See [Exclude](#exclude) for reference.                                                                                               |
+
+#### Exclude
+the `exclude` key on a backup allows you to specify multiple files to exclude or
+files to look for filenames to be excluded. You can specify the following keys:
+```yaml
+exclude:
+    exclude_cache: true
+    exclude:
+        - /path/to/file
+    iexclude:
+        - /path/to/file
+    exclude_file:
+        - /path/to/file
+    exclude_if_present:
+        - /path/to/file
+```
+Please refer to the use of the specific keys to the
+[documentation](https://restic.readthedocs.io/en/latest/040_backup.html#excluding-files).
 
 ## Dependencies
 none
