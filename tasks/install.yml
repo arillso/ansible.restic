@@ -34,7 +34,7 @@
 
 - name: Fail if restic could not be installed
   fail:
-    msg: | -1
+    msg: >-
       Restic binary has been faulty and has been removed.
       Try to re-run the role and make sure you have bzip2 installed!
   when: "'FAILED' in restic_test_result.stderr"
