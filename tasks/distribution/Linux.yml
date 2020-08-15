@@ -31,6 +31,21 @@
     - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
 
+- name: Create restore script
+  template:
+    src: restic_restore_Linux.j2
+    dest: '{{ restic_script_dir }}/restore-{{ item.name }}.sh'
+    mode: '0700'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
+  no_log: true
+  with_items: '{{ restic_backups }}'
+  when:
+    - item.name is defined
+    - item.src is defined or item.stdin is defined
+    - item.src is defined or item.stdin and item.stdin_cmd is defined
+    - item.repo in restic_repos
+
 - name: Setup CRON jobs
   cron:
     name: 'arillso.restic backup {{ item.name }}'
@@ -47,3 +62,15 @@
     - item.name is defined
     - item.scheduled | default(false)
   with_items: '{{ restic_backups }}'
+
+- include: restic_auto_restore.yml
+  with_items: "{{ restic_backups }}"
+  when:
+    - item.name is defined
+    - item.src is defined or item.stdin is defined
+    - item.src is defined or item.stdin and item.stdin_cmd is defined
+    - item.repo in restic_repos
+  loop_control:
+    loop_var: restic_backups_loop
+
+
