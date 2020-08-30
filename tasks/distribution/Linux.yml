@@ -63,14 +63,15 @@
     - item.scheduled | default(false)
   with_items: '{{ restic_backups }}'
 
-- include: restic_auto_restore.yml
-  with_items: "{{ restic_backups }}"
+- name: "restic auto_restore"
+  include: restic_auto_restore.yml
   when:
     - item.name is defined
     - item.src is defined or item.stdin is defined
     - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
+  with_items: "{{ restic_backups }}"
   loop_control:
-    loop_var: restic_backups_loop
+    loop_var: "{{ item.name }}"
 
 
