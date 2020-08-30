@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+### Added
+* Sanity check for restic binary
+
 ## [0.2.7] 2020-08-05
 ### Added
 * Config option to exclude files
