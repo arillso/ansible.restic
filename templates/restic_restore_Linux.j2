@@ -20,5 +20,4 @@ BACKUP_SOURCE={{ item.src }}
 {% endif %}
 set -euxo pipefail
 
-restic restore latest --target $BACKUP_SOURCE
-
+restic restore latest --target /
