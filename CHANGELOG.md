@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+
+## [0.2.8] 2020-09-08
 ### Added
 * Sanity check for restic binary
 * Support for the Backblaze B2 backend
@@ -78,7 +80,8 @@ and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 * initial release
 
 
-[Unreleased]: https://github.com/arillso/ansible.restic/compare/0.2.7...HEAD
+[Unreleased]: https://github.com/arillso/ansible.restic/compare/0.2.8...HEAD
+[0.2.8]: https://github.com/arillso/ansible.restic/compare/0.2.7...0.2.8
 [0.2.7]: https://github.com/arillso/ansible.restic/compare/0.2.6...0.2.7
 [0.2.6]: https://github.com/arillso/ansible.restic/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/arillso/ansible.restic/compare/0.2.4...0.2.5
