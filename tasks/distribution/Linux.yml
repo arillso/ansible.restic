@@ -9,6 +9,7 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: true
+  become: true
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
@@ -24,6 +25,7 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: true
+  become: true
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined

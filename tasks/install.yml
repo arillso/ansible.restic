@@ -31,6 +31,7 @@
     path: '{{ restic_bin_bath }}'
     state: absent
   when: "'FAILED' in restic_test_result.stderr"
+  become: true
 
 - name: Fail if restic could not be installed
   fail:
@@ -45,3 +46,4 @@
     path: '{{ restic_install_path }}/restic'
     state: link
     force: true
+  become: true
