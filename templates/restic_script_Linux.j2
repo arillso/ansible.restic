@@ -116,8 +116,8 @@ if [[ $({% if item.stdin is defined and item.stdin == true %}
   {{ restic_install_path }}/restic backup $BACKUP_SOURCE $MODE_TAG \
     {{ tags(item.tags) }} \
     {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
-    $@
-{% endif %}) ]]
+    $@ \
+{% endif %} | tee {{ restic_log_dir }}/{{ item.name }}-backup-output.log) ]]
 then
     echo "$(date +%Y-%m-%d) OK" >> {{ restic_log_dir }}/{{ item.name }}-backup-result.log
 else
@@ -126,7 +126,7 @@ fi
 {#
   Define stdin forget commands
 #}
-if [[ $({{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %}) ]]
+if [[ $({{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ restic_log_dir }}/{{ item.name }}-forget-output.log) ]]
 then
     echo "$(date +%Y-%m-%d) OK" >> {{ restic_log_dir }}/{{ item.name }}-forget-result.log
 else
