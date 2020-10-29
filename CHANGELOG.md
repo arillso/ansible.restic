@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 and [human-readable changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
+### Added
+* Fixed init error on already initialized Backblaze B2 repositories
 
 ## [0.2.8] 2020-09-08
 ### Added
