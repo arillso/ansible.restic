@@ -1,5 +1,5 @@
 ---
-name: Galaxy import
+name: 🌌 Galaxy import
 
 on:
   push: {}
@@ -9,6 +9,7 @@ on:
 
 jobs:
   import:
+    name: 🚀 Galaxy Action
     runs-on: ubuntu-latest
     steps:
       - name: checkout
