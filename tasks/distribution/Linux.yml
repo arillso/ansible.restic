@@ -46,10 +46,10 @@
     state: present
   become: true
   no_log: true
+  loop: "{{ items|flatten(levels=1) }}"
+  loop_control:
+    index_var: index
   when:
     - restic_create_cron
     - item.name is defined
     - item.scheduled | default(false)
-  loop: "{{ items|flatten(levels=1) }}"
-  loop_control:
-    index_var: index
