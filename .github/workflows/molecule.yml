@@ -15,6 +15,14 @@ on:
 jobs:
   molecule:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - centos7
+          - centos6
+          - ubuntu1804
+          - debian9
+          - debian10
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -22,5 +30,7 @@ jobs:
           path: "${{ github.repository }}"
       - name: molecule
         uses: robertdebock/molecule-action@2.6.3
+        env:
+          MOLECULE_DISTRO: ${{ matrix.distro }}
         with:
           image: ubuntu
