@@ -4,8 +4,8 @@
 - name: reformat dict if necessary:
   set_fact:
     restic_backups: "{{ restic_backups|dict2items|json_query('[*].value') }}"
-    when:
-      mydict | restic_backups == "dict"
+  when:
+    - restic_backups | type_debug == "dict"
 
 - name: Create backup credentials
   template:
