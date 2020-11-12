@@ -1,0 +1,26 @@
+---
+name: Molecule test
+on:
+  push:
+    paths:
+      - defaults/**
+      - handlers/**
+      - meta/**
+      - molecule/**
+      - tasks/**
+      - templates/**
+      - vars/**
+      - .github/**
+
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - name: molecule
+        uses: robertdebock/molecule-action@2.6.3
+        with:
+          image: ubuntu
