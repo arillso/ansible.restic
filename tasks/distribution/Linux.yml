@@ -1,6 +1,12 @@
 ---
 # tasks file for skeleton
 
+- name: reformat dict if necessary:
+  set_fact:
+    restic_backups: "{{ restic_backups|dict2items|json_query('[*].value') }}"
+    when:
+      mydict | restic_backups == "dict"
+
 - name: Create backup credentials
   template:
     src: restic_access_Linux.j2
@@ -9,9 +15,7 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: true
-  loop: "{{ items|items2dict|flatten(levels=1) }}"
-  loop_control:
-    index_var: index
+  with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
     - item.src is defined or item.stdin is defined
@@ -26,9 +30,7 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: true
-  loop: "{{ items|items2dict|flatten(levels=1) }}"
-  loop_control:
-    index_var: index
+  with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
     - item.src is defined or item.stdin is defined
@@ -46,9 +48,7 @@
     state: present
   become: true
   no_log: true
-  loop: "{{ items|items2dict|flatten(levels=1) }}"
-  loop_control:
-    index_var: index
+  with_items: '{{ restic_backups }}'
   when:
     - restic_create_cron
     - item.name is defined
