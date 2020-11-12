@@ -104,7 +104,7 @@ else
 fi
 
 
-{% if item.enable_logging %}
+{% if item.enable_logging is defined and item.enable_logging %}
 if [[ $({% if item.stdin is defined and item.stdin == true %}
   {{ item.stdin_cmd }} | {{ restic_install_path }}/restic backup \
     --stdin $MODE_TAG \
