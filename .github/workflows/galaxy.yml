@@ -2,7 +2,9 @@
 name: 🌌 Galaxy import
 
 on:
-  push: {}
+  push:
+    branches:
+      - master
   release:
     types:
       - published
