@@ -9,7 +9,7 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: true
-  with_items: '{{ restic_backups }}'
+  with_items: '{{ restic_backups | dict2items }}'
   when:
     - item.name is defined
     - item.src is defined or item.stdin is defined
@@ -24,7 +24,7 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: true
-  with_items: '{{ restic_backups }}'
+  with_items: '{{ restic_backups | dict2items }}'
   when:
     - item.name is defined
     - item.src is defined or item.stdin is defined
@@ -46,4 +46,4 @@
     - restic_create_cron
     - item.name is defined
     - item.scheduled | default(false)
-  with_items: '{{ restic_backups }}'
+  with_items: '{{ restic_backups | dict2items }}'
