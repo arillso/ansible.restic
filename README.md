@@ -140,6 +140,16 @@ Available variables:
 | `schedule_month`   |           no (`*`)            | Month when the job is run. ( 1-12, *, */2, etc )                                                                                                                             |
 | `exclude`          |           no (`{}`)           | Allows you to specify files to exclude. See [Exclude](#exclude) for reference.                                                                                               |
 
+Example:
+```yaml
+restic_backups:
+  - name: data
+    repo: remove
+    src: /path/to/data
+    scheduled: true
+    schedule_hour: 3
+```
+
 #### Exclude
 the `exclude` key on a backup allows you to specify multiple files to exclude or
 files to look for filenames to be excluded. You can specify the following keys:
