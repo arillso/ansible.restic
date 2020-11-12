@@ -11,6 +11,9 @@ on:
       - templates/**
       - vars/**
       - .github/**
+  pull_request:
+    branches:
+      - master
 
 jobs:
   lint:
