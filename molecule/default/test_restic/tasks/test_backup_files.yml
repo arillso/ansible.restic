@@ -16,3 +16,11 @@
     assert:
       that:
         - test_stdin_file.stat.exists
+
+  - name: Run the backup scripts
+    shell: "./{{ item }}"
+    args:
+      chdir: ~/restic/
+    with_items:
+      - backup-test.sh
+      - backup-test_stdin.sh
