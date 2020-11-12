@@ -19,4 +19,4 @@ jobs:
       - name: galaxy
         uses: robertdebock/galaxy-action@1.0.3
         with:
-          galaxy_api_key: ${{ secrets.galaxy_api_key }}
+          galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
