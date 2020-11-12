@@ -40,6 +40,18 @@ simply appending them:
 $ /path/to/backup/script/backup-example.sh --tag deployment
 ```
 
+### Access scripts
+```bash
+. /path/to/backup/script/access-example.sh
+restic snapshots
+```
+
+### Restore scripts
+```bash
+# This will restore the latest backup
+/path/to/backup/script/restore-example.sh
+```
+
 ### CRON / Scheduled Tasks
 In order to make use of defined backups, they can be automatically setup as
 scheduled tasks. You have to be aware of the fact that (on linux systems at
@@ -110,6 +122,7 @@ restic_repos:
     location: sftp:user@host:/srv/restic-repo
     password: securepassword2
     init: true
+
 ```
 
 ### Backups
@@ -123,6 +136,7 @@ Available variables:
 | `name`             |              yes              | The name of this backup. Used together with pruning and scheduling and needs to be unique.                                                                                   |
 | `repo`             |              yes              | The name of the repository to backup to.                                                                                                                                     |
 | `src`              |              yes              | The source directory or file                                                                                                                                                 |
+| `auto_restore`     |              no               | This will auto restore the latest backup in the event that a state file does not exist in /var/restic-auto-restore                                                           |
 | `stdin`            |              no               | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)?                                                      |
 | `stdin_cmd`        | no (yes if `stdin` == `true`) | The command to produce the stdin.                                                                                                                                            |
 | `stdin_filename`   |              no               | The filename used in the repository.                                                                                                                                         |

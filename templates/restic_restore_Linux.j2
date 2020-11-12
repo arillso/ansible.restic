@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+# Restore script for {{ item.src|default('stdin') }}
+# Use this file to restore a latest Backup with one execution.
+
+export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
+export RESTIC_PASSWORD={{ restic_repos[item.repo].password }}
+BACKUP_NAME={{ item.name }}
+{% if restic_repos[item.repo].aws_access_key is defined %}
+export AWS_ACCESS_KEY_ID={{ restic_repos[item.repo].aws_access_key }}
+{% endif %}
+{% if restic_repos[item.repo].aws_secret_access_key is defined %}
+export AWS_SECRET_ACCESS_KEY={{ restic_repos[item.repo].aws_secret_access_key }}
+{% endif %}
+{% if restic_repos[item.repo].aws_default_region is defined %}
+export AWS_DEFAULT_REGION={{ restic_repos[item.repo].aws_default_region }}
+{% endif %}
+{% if item.src is defined %}
+BACKUP_SOURCE={{ item.src }}
+{% endif %}
+set -euxo pipefail
+
+restic restore latest --target /

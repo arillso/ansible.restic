@@ -1,0 +1,25 @@
+# - name: auto_restore check
+#   debug:
+#     msg: "auto_restore in? {{ restic_backups_loop }}"
+
+# - name: auto_restore enabled
+#   debug:
+#     msg: "auto_restore enabled {{ restic_backups_loop }}"
+#   when: restic_backups_loop.auto_restore is defined
+
+- name: "check for a state file {{ restic_auto_restore_dir }}/{{ restic_backups_loop.name }}.state"
+  stat:
+    path: "{{ restic_auto_restore_dir }}/{{ restic_backups_loop.name }}.state"
+  register: restic_restore_state_file
+  when: restic_backups_loop.auto_restore is defined
+
+# - name: auto_restore stat
+#   debug:
+#     msg: "auto_restore stat results {{ restic_restore_state_file }}"
+#   when: restic_restore_state_file is defined
+
+- name: "run restore if {{ restic_auto_restore_dir }}/{{ restic_backups_loop.name }}.state and auto restore is set"
+  shell: "{{ restic_script_dir }}/restore-{{ restic_backups_loop.name }}.sh && touch {{ restic_auto_restore_dir }}/{{ restic_backups_loop.name }}.state"
+  when:
+    - restic_backups_loop.auto_restore is defined
+    - not restic_restore_state_file.stat.exists
