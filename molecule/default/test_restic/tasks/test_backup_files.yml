@@ -1,0 +1,18 @@
+---
+  - name: Stat test backup file
+    stat:
+      path: ~/restic/backup-test.sh
+    register: test_file
+  - name: Check that the test backup file exists
+    assert:
+      that:
+        - test_file.stat.exists
+
+  - name: Stat test_stdin backup file
+    stat:
+      path: ~/restic/backup-test_stdin.sh
+    register: test_stdin_file
+  - name: Check that the test_stdin backup file exists
+    assert:
+      that:
+        - test_stdin_file.stat.exists
