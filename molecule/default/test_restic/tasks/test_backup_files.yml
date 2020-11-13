@@ -22,5 +22,6 @@
     args:
       chdir: ~/restic/
     with_items:
+      - backup-dicttest.sh
       - backup-test.sh
       - backup-test_stdin.sh
