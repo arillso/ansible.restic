@@ -65,12 +65,12 @@ ansible-galaxy install arillso.restic
 | Name                   | Default              | Description                                                                 |
 | ---------------------- | -------------------- | --------------------------------------------------------------------------- |
 | `restic_url`           | `undefined`          | The URL to download restic from. Use this variable to overwrite the default |
-| `restic_version`       | `'0.10.0'`            | The version of Restic to install                                            |
+| `restic_version`       | `'0.11.0'`           | The version of Restic to install                                            |
 | `restic_download_path` | `'/opt/restic'`      | Download location for the restic binary                                     |
 | `restic_install_path`  | `'/usr/local/bin'`   | Install location for the restic binary                                      |
 | `restic_script_dir`    | `'~/restic'`         | Location of the generated backup scripts                                    |
 | `restic_repos`         | `{}`                 | A dictionary of repositories where snapshots are stored                     |
-| `restic_backups`       | `[]`                 | A list of dictionaries specifying the files and directories to be backed up |
+| `restic_backups`       | `{}` (or `[]`)       | A list of dictionaries specifying the files and directories to be backed up |
 | `restic_create_cron`   | `false`              | Should a cronjob be created for each backup                                 |
 | `restic_dir_owner`     | `'{{ansible_user}}'` | The owner of all created dirs                                               |
 | `restic_dir_group`     | `'{{ansible_user}}'` | The group of all created dirs                                               |
@@ -146,12 +146,17 @@ Available variables:
 Example:
 ```yaml
 restic_backups:
-  - name: data
+  data:
+    name: data
     repo: remove
     src: /path/to/data
     scheduled: true
     schedule_hour: 3
 ```
+
+> You can also specify restic_backups as an array, which is a legacy feature and
+> might be deprecated in the future. currently, the name key is used for
+> namint the access and backup files
 
 #### Exclude
 the `exclude` key on a backup allows you to specify multiple files to exclude or

@@ -48,6 +48,3 @@ Follow these steps to contribute code:
     chapters).
 2. Create a fork and implement your changes
 3. Open a pull request to `master`
-
-Before submitting the Pull request, make sure to add a description of your
-changes to the changelog.
