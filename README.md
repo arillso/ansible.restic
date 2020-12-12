@@ -139,6 +139,7 @@ Available variables:
 | `schedule_weekday` |           no (`*`)            | Weekday when the job is run.  ( 0-6 for Sunday-Saturday, *, etc )                                                                                                            |
 | `schedule_month`   |           no (`*`)            | Month when the job is run. ( 1-12, *, */2, etc )                                                                                                                             |
 | `exclude`          |           no (`{}`)           | Allows you to specify files to exclude. See [Exclude](#exclude) for reference.                                                                                               |
+| `cronjob_options`  |           no (`''`)           | Allows you to add further arbitrary commands                                                                                  |
 
 Example:
 ```yaml
@@ -148,6 +149,7 @@ restic_backups:
     src: /path/to/data
     scheduled: true
     schedule_hour: 3
+    cronjob_options: '&& curl healthchecks.yourdomain.com > /dev/null'
 ```
 
 #### Exclude
