@@ -2,7 +2,10 @@
 
 > **Beta:** This role is in beta status.
 
-[![Build Status](https://img.shields.io/travis/arillso/ansible.restic.svg?branch=master&style=popout-square)](https://travis-ci.org/arillso/ansible.restic) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout-square)](https://sbaerlo.ch/licence) [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-restic-blue.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic) [![Ansible Role](https://img.shields.io/ansible/role/d/42773.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic)
+![🎭 Tests](https://github.com/arillso/ansible.restic/workflows/%F0%9F%8E%AD%20Tests/badge.svg)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout-square)](https://sbaerlo.ch/licence)
+[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-restic-blue.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic)
+[![Ansible Role](https://img.shields.io/ansible/role/d/42773.svg?style=popout-square)](https://galaxy.ansible.com/arillso/restic)
 
 ## Description
 [Restic](https://github.com/restic/restic) is a versatile Go based backup
@@ -62,12 +65,12 @@ ansible-galaxy install arillso.restic
 | Name                   | Default              | Description                                                                 |
 | ---------------------- | -------------------- | --------------------------------------------------------------------------- |
 | `restic_url`           | `undefined`          | The URL to download restic from. Use this variable to overwrite the default |
-| `restic_version`       | `'0.10.0'`            | The version of Restic to install                                            |
+| `restic_version`       | `'0.11.0'`           | The version of Restic to install                                            |
 | `restic_download_path` | `'/opt/restic'`      | Download location for the restic binary                                     |
 | `restic_install_path`  | `'/usr/local/bin'`   | Install location for the restic binary                                      |
 | `restic_script_dir`    | `'~/restic'`         | Location of the generated backup scripts                                    |
 | `restic_repos`         | `{}`                 | A dictionary of repositories where snapshots are stored                     |
-| `restic_backups`       | `[]`                 | A list of dictionaries specifying the files and directories to be backed up |
+| `restic_backups`       | `{}` (or `[]`)       | A list of dictionaries specifying the files and directories to be backed up |
 | `restic_create_cron`   | `false`              | Should a cronjob be created for each backup                                 |
 | `restic_dir_owner`     | `'{{ansible_user}}'` | The owner of all created dirs                                               |
 | `restic_dir_group`     | `'{{ansible_user}}'` | The group of all created dirs                                               |
@@ -151,6 +154,21 @@ restic_backups:
     schedule_hour: 3
     cronjob_options: '&& curl healthchecks.yourdomain.com > /dev/null'
 ```
+
+Example:
+```yaml
+restic_backups:
+  data:
+    name: data
+    repo: remove
+    src: /path/to/data
+    scheduled: true
+    schedule_hour: 3
+```
+
+> You can also specify restic_backups as an array, which is a legacy feature and
+> might be deprecated in the future. currently, the name key is used for
+> namint the access and backup files
 
 #### Exclude
 the `exclude` key on a backup allows you to specify multiple files to exclude or

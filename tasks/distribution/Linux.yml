@@ -1,6 +1,12 @@
 ---
 # tasks file for skeleton
 
+- name: reformat dict if necessary
+  set_fact:
+    restic_backups: "{{ restic_backups|dict2items|json_query('[*].value') }}"
+  when:
+    - restic_backups | type_debug == "dict"
+
 - name: Create backup credentials
   template:
     src: restic_access_Linux.j2
@@ -42,8 +48,8 @@
     state: present
   become: true
   no_log: true
+  with_items: '{{ restic_backups }}'
   when:
     - restic_create_cron
     - item.name is defined
     - item.scheduled | default(false)
-  with_items: '{{ restic_backups }}'

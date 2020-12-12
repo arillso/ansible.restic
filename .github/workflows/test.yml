@@ -1,0 +1,57 @@
+---
+name: 🎭 Tests
+on:
+  push:
+    paths:
+      - defaults/**
+      - handlers/**
+      - meta/**
+      - molecule/**
+      - tasks/**
+      - templates/**
+      - vars/**
+      - .github/**
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: 📝 Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+      - name: Lint Code Base
+        uses: github/super-linter@v3
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ANSIBLE: true
+          ANSIBLE_DIRECTORY: './'
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  molecule:
+    name: 🧪 Molecule test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - centos7
+          - centos6
+          - ubuntu1804
+          - debian9
+          - debian10
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - name: molecule
+        uses: robertdebock/molecule-action@2.6.4
+        env:
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+        with:
+          image: ubuntu
