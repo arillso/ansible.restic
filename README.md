@@ -187,14 +187,7 @@ none
     - restic
 ```
 
-## Author
-
-- Matthias Leutenegger
-
 ## License
 
-This project is under the MIT License. See the [LICENSE](https://sbaerlo.ch/licence) file for the full license text.
+This project is under the MIT License. See the [LICENSE](LICENSE) file for the full license text.
 
-## Copyright
-
-(c) 2019, Arillso
