@@ -1,5 +1,5 @@
 {
   "scripts": {
-    "changelog": "git-chglog 0.2.8.."
+    "release": "git-chglog -o CHANGELOG.md $([[ ! -z $npm_config_next ]] && echo \"--next-tag $npm_config_next\" ) 0.2.8.. "
   }
 }
