@@ -25,6 +25,17 @@ export B2_ACCOUNT_KEY={{ restic_repos[item.repo].b2_account_key }}
 BACKUP_SOURCE={{ item.src }}
 {% endif %}
 set -euxo pipefail
+
+{#
+  Run pre backup commands
+#}
+
+{% if item.pre_backup_commands is defined %}
+  {% for command in item.pre_backup_commands %}
+{{ command }}
+  {% endfor %}
+{% endif %}
+
 {#
   Define Tags
 #}
@@ -119,3 +130,13 @@ fi
   Define stdin forget commands
 #}
 {{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %}
+
+{#
+  Run post backup commands
+#}
+
+{% if item.post_backup_commands is defined %}
+  {% for command in item.post_backup_commands %}
+{{ command }}
+  {% endfor %}
+{% endif %}

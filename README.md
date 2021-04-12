@@ -142,7 +142,9 @@ Available variables:
 | `schedule_weekday` |           no (`*`)            | Weekday when the job is run.  ( 0-6 for Sunday-Saturday, *, etc )                                                                                                            |
 | `schedule_month`   |           no (`*`)            | Month when the job is run. ( 1-12, *, */2, etc )                                                                                                                             |
 | `exclude`          |           no (`{}`)           | Allows you to specify files to exclude. See [Exclude](#exclude) for reference.                                                                                               |
-| `cronjob_options`  |           no (`''`)           | Allows you to add further arbitrary commands                                                                                  |
+| `pre_backup_commands`  | no | Allows you to add a list of custom commands which are run before the backup in the context of the backup script                                                                                   |
+
+| `post_backup_commands`  | no | Allows you to add a list of  custom commands which are run after the backup in the context of the backup script                                                                                   |
 
 Example:
 ```yaml
@@ -152,7 +154,10 @@ restic_backups:
     src: /path/to/data
     scheduled: true
     schedule_hour: 3
-    cronjob_options: '&& curl healthchecks.yourdomain.com > /dev/null'
+    pre_backup_commands:
+      - mysqldump > /foo/bar.sql
+    post_backup_commands:
+      - curl healthchecks.yourdomain.com > /dev/null
 ```
 
 Example:
@@ -164,11 +169,15 @@ restic_backups:
     src: /path/to/data
     scheduled: true
     schedule_hour: 3
+    pre_backup_commands:
+      - mysqldump > /foo/bar.sql
+    post_backup_commands:
+      - curl healthchecks.yourdomain.com > /dev/null
 ```
 
 > You can also specify restic_backups as an array, which is a legacy feature and
 > might be deprecated in the future. currently, the name key is used for
-> namint the access and backup files
+> naming the access and backup files
 
 #### Exclude
 the `exclude` key on a backup allows you to specify multiple files to exclude or
