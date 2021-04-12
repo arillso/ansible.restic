@@ -26,7 +26,7 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
       - name: Lint Code Base
-        uses: github/super-linter@v3
+        uses: github/super-linter@v3.15.5
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: true
@@ -50,7 +50,7 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: molecule
-        uses: robertdebock/molecule-action@2.6.4
+        uses: robertdebock/molecule-action@2.6.16
         env:
           MOLECULE_DISTRO: ${{ matrix.distro }}
         with:
