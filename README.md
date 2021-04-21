@@ -149,7 +149,7 @@ Example:
 restic_backups:
   data:
     name: data
-    repo: remove
+    repo: remote
     src: /path/to/data
     scheduled: true
     schedule_hour: 3
