@@ -82,7 +82,19 @@
     - item.name is defined
     - item.scheduled | default(false)
 
-- name: Enable restic timer
+- name: Enable restic service
+  become: true
+  ansible.builtin.systemd:
+    name: "restic-{{ item.name | replace(' ', '') | string }}.service"
+    enabled: true
+    daemon_reload: true
+  with_items: '{{ restic_backups }}'
+  when:
+    - restic_create_cron
+    - item.name is defined
+    - item.scheduled | default(false)
+
+- name: Enable and start restic timer
   become: true
   ansible.builtin.systemd:
     name: "restic-{{ item.name | replace(' ', '') | string }}.timer"
