@@ -2,34 +2,22 @@
 - name: add OS specific variables
   ansible.builtin.include_vars: "{{ lookup('first_found', restic_os_variables) }}"
 
-- name: Ensure restic directories exist
-  file:
-    state: 'directory'
-    path: '{{ item }}'
-    mode: '0755'
-    owner: '{{ restic_dir_owner }}'
-    group: '{{ restic_dir_group }}'
-  with_items: '{{ restic_create_paths }}'
+- name: perform versionscheck
+  ansible.builtin.include_tasks: versioncheck.yml
+  when: submodules_versioncheck|bool
 
-- name: Check if downloaded binary is present
-  stat:
-    path: '{{ restic_download_path }}/bin/restic-{{ restic_version }}'
-  register: restic_executable
-
-- name: Check if installed binary is present
-  stat:
-    path: '{{ restic_install_path }}/restic'
-  register: restic_installed
+- name: make sure restic is available
+  ansible.builtin.include_tasks: preperation.yml
 
 - name: Install restic
-  include: 'install.yml'
+  ansible.builtin.include_tasks: 'install.yml'
   when: not restic_executable.stat.exists or not restic_installed.stat.exists
 
 - name: Configure restic
-  include: 'configure.yml'
+  ansible.builtin.include_tasks: 'configure.yml'
 
 - name: include distribution tasks
-  include_tasks: '{{ loop_distribution }}'
+  ansible.builtin.include_tasks: '{{ loop_distribution }}'
   with_first_found:
     - files:
         - '{{ distribution }}-{{ distribution_version }}.yml'
@@ -46,6 +34,3 @@
     distribution: '{{ ansible_distribution }}'
     distribution_version: '{{ ansible_distribution_version }}'
     distribution_major_version: '{{ ansible_distribution_major_version }}'
-  tags:
-    - configuration
-    - packages

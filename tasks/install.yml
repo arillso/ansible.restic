@@ -22,7 +22,7 @@
     group: '{{ restic_dir_group }}'
 
 - name: Test the binary
-  shell: "{{ restic_bin_bath }} version"
+  ansible.builtin.command: "{{ restic_bin_bath }} version"
   ignore_errors: true
   register: restic_test_result
 
