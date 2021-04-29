@@ -1,6 +1,4 @@
 ---
-# tasks file for skeleton
-
 - name: reformat dict if necessary
   set_fact:
     restic_backups: "{{ restic_backups|dict2items|json_query('[*].value') }}"
@@ -10,7 +8,7 @@
 - name: Create backup credentials
   template:
     src: restic_access_Linux.j2
-    dest: '{{ restic_script_dir }}/access-{{ item.name }}.sh'
+    dest: "{{ restic_script_dir }}/access-{{ item.name | replace(' ', '') }}.sh"
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
@@ -25,7 +23,7 @@
 - name: Create backup script
   template:
     src: restic_script_Linux.j2
-    dest: '{{ restic_script_dir }}/backup-{{ item.name }}.sh'
+    dest: "{{ restic_script_dir }}/backup-{{ item.name | replace(' ', '') }}.sh"
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
@@ -37,7 +35,7 @@
     - item.src is defined or item.stdin and item.stdin_cmd is defined
     - item.repo in restic_repos
 
-- name: Setup CRON jobs
+- name: cleanup CRON jobs
   cron:
     name: 'arillso.restic backup {{ item.name }}'
     job: 'CRON=true {{ restic_script_dir }}/backup-{{ item.name }}.sh'
@@ -45,9 +43,52 @@
     hour: '{{ item.schedule_hour | default("*") }}'
     weekday: '{{ item.schedule_weekday | default("*") }}'
     month: '{{ item.schedule_month | default("*") }}'
-    state: present
+    state: absent
   become: true
   no_log: true
+  with_items: '{{ restic_backups }}'
+  when:
+    - restic_create_cron
+    - item.name is defined
+    - item.scheduled | default(false)
+
+- name: copy systemd timer
+  become: true
+  ansible.builtin.template:
+    src: templates/restic.timer.j2
+    dest: "/lib/systemd/system/restic-{{ item.name | replace(' ', '') }}.timer"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  no_log: true
+  with_items: '{{ restic_backups }}'
+  when:
+    - restic_create_cron
+    - item.name is defined
+    - item.scheduled | default(false)
+
+- name: copy systemd service
+  become: true
+  ansible.builtin.template:
+    src: templates/restic.service.j2
+    dest: "/lib/systemd/system/restic-{{ item.name | replace(' ', '') }}.service"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  no_log: true
+  with_items: '{{ restic_backups }}'
+  when:
+    - restic_create_cron
+    - item.name is defined
+    - item.scheduled | default(false)
+
+- name: Enable restic timer
+  become: true
+  ansible.builtin.systemd:
+    name: "restic-{{ item.name | replace(' ', '') | string }}.timer"
+    enabled: true
+    state: started
+    daemon_reload: true
   with_items: '{{ restic_backups }}'
   when:
     - restic_create_cron

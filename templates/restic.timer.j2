@@ -1,0 +1,10 @@
+[Unit]
+Description=Run restic backup {{ item.name }} every night
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+RandomizedDelaySec=3h
+Persistent=yes
+
+[Install]
+WantedBy=timers.target
