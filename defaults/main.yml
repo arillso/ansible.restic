@@ -4,7 +4,7 @@ restic_url: '{{ restic_url_default }}'
 restic_version: '0.11.0'
 restic_download_path: '/opt/restic'
 restic_install_path: '/usr/bin'
-restic_script_dir: '~/restic'
+restic_script_dir: '/opt/restic'
 restic_log_dir: '{{ restic_script_dir }}/log'
 restic_repos: {}
 restic_backups: []
