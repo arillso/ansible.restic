@@ -173,7 +173,7 @@ restic_backups:
 
 > You can also specify restic_backups as an array, which is a legacy feature and
 > might be deprecated in the future. currently, the name key is used for
-> namint the access and backup files
+> naming the access and backup files
 
 #### Exclude
 
