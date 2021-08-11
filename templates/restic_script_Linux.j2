@@ -63,11 +63,24 @@ set -uxo pipefail
 {% macro stdin_filename(n) -%}
   {% if n is defined %} --stdin-filename {{ n }}{% endif %}
 {%- endmacro %}
+
+{#
+  Define backup src list
+#}
+{% macro backup_src_list(src) -%}
+  {{ src | list | join(' ') }}
+{%- endmacro %}
 {#
   Define path
 #}
 {% macro path(repo) -%}
-  {% if repo.src is defined and repo.src != None and (repo.src|length>0)  %}{{ repo.src }}{% else %}{{ repo.stdin_filename }}{% endif %}
+  {% if repo.src is defined and repo.src != None and (repo.src|length>0)  %}
+    {% for src_item in {{ repo.src | list }} %}
+    --path {{ src_item }} 
+  {% endfor %}
+  {% else %}
+    --path {{ repo.stdin_filename }}
+  {% endif %}
 {%- endmacro %}
 {#
   Define retention pattern
@@ -125,7 +138,7 @@ fi
     {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
     $@ \
 {% else %}
-  {{ restic_install_path }}/restic backup $BACKUP_SOURCE $MODE_TAG \
+  {{ restic_install_path }}/restic backup {{ backup_src_list($BACKUP_SOURCE) }} $MODE_TAG \
     {{ tags(item.tags) }} \
     {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
     $@ \
@@ -140,7 +153,7 @@ fi
 {#
   Define stdin forget commands
 #}
-{{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
+{{ restic_install_path }}/restic forget {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
 if [[ $? -eq 0 ]]
 then
     echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ forget_result_log }}
