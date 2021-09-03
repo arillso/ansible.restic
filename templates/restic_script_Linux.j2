@@ -35,9 +35,6 @@ export AZURE_ACCOUNT_NAME={{ restic_repos[item.repo].azure_account_name }}
 {% if restic_repos[item.repo].azure_account_key is defined %}
 export AZURE_ACCOUNT_KEY={{ restic_repos[item.repo].azure_account_key }}
 {% endif %}
-{% if item.src is defined %}
-BACKUP_SOURCE={{ item.src }}
-{% endif %}
 set -uxo pipefail
 {#
   Define Tags
@@ -63,25 +60,30 @@ set -uxo pipefail
 {% macro stdin_filename(n) -%}
   {% if n is defined %} --stdin-filename {{ n }}{% endif %}
 {%- endmacro %}
-
 {#
   Define backup src list
 #}
-{% macro backup_src_list(src) -%}
-  {{ src | list | join(' ') }}
-{%- endmacro %}
+{% macro backup_src_list(item) -%}
+  {% if item.src is defined -%}
+    {% for src_item in item.src -%}
+        {{ src_item + " " }} 
+    {%- endfor %}
+  {% endif %}
+{% endmacro %}
+
 {#
-  Define path
+  Define pathAttribute
 #}
-{% macro path(repo) -%}
-  {% if repo.src is defined and repo.src != None and (repo.src|length>0)  %}
-    {% for src_item in {{ repo.src | list }} %}
-    --path {{ src_item }} 
-  {% endfor %}
+{% macro path_attribute(repo) -%}
+  {% if repo.src is defined and repo.src != None and (repo.src|length>0)  -%}
+    {% for src_item in repo.src -%}
+    --path {{ src_item + " " }} 
+    {%- endfor %}
   {% else %}
-    --path {{ repo.stdin_filename }}
+    --path {{ repo.stdin_filename + " " }}
   {% endif %}
 {%- endmacro %}
+
 {#
   Define retention pattern
 #}
@@ -138,7 +140,7 @@ fi
     {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
     $@ \
 {% else %}
-  {{ restic_install_path }}/restic backup {{ backup_src_list($BACKUP_SOURCE) }} $MODE_TAG \
+  {{ restic_install_path }}/restic backup {{ backup_src_list(item) }} $MODE_TAG \
     {{ tags(item.tags) }} \
     {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
     $@ \
@@ -153,7 +155,7 @@ fi
 {#
   Define stdin forget commands
 #}
-{{ restic_install_path }}/restic forget {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
+{{ restic_install_path }}/restic forget {{ path_attribute(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
 if [[ $? -eq 0 ]]
 then
     echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ forget_result_log }}
