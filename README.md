@@ -129,6 +129,8 @@ Available variables:
 | `stdin`            |              no               | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)?                                                      |
 | `stdin_cmd`        | no (yes if `stdin` == `true`) | The command to produce the stdin.                                                                                                                                            |
 | `stdin_filename`   |              no               | The filename used in the repository.                                                                                                                                         |
+| `before_script`             |              no               | Content for a script, that will be executed before the backup command.                                                                                                                                                         |
+| `after_script`             |              no               | Content for a script, that will be executed after the backup and forget command command.                                                                                                                                                         |
 | `tags`             |              no               | Array of default tags                                                                                                                                                        |
 | `keep_last`        |              no               | If set, only keeps the last n snapshots.                                                                                                                                     |
 | `keep_hourly`      |              no               | If set, only keeps the last n hourly snapshots.                                                                                                                              |
@@ -149,10 +151,11 @@ Available variables:
 Example:
 ```yaml
 restic_backups:
-  data:
     name: data
     repo: remote
     src: /path/to/data
+    before_script: "{{ lookup('file', 'beforeScript.sh') }}"
+    after_script: "{{ lookup('file', 'afterScript.sh') }}"
     scheduled: true
     schedule_hour: 3
 ```
