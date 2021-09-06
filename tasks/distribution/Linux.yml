@@ -29,7 +29,7 @@
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
-  no_log: false
+  no_log: true
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
