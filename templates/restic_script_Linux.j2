@@ -24,22 +24,6 @@ source {{ restic_script_dir }}/access-{{ item.name }}.sh
 
 set -uxo pipefail
 STATUS="NO_ERROR"
-
-{% if item.disable_logging is not defined or not item.disable_logging -%}
-# deletes log file if to big (default 500 KB max)
-{% if item.max_result_log_size is defined %}
-MAX_LOGSIZE={{ item.max_result_log_size }}
-{% else %}
-MAX_LOGSIZE=500000
-{% endif %}
-LOGSIZE=$(stat -c%s {{ result_log }})
-echo "Size of result log is $LOGSIZE bytes."
-if [[ "$LOGSIZE" -gt "$MAX_LOGSIZE" ]]
-then
-  echo "Result log will be deleted."
-  rm {{ result_log}}
-fi
-{%- endif %}
 {#
   Define Tags
 #}
@@ -67,13 +51,13 @@ fi
 {#
   Define backup src list
 #}
-{% macro backup_src_list(item) %}
+{% macro backup_src_list(item) -%}
   {% if item.src is defined -%}
     {% for src_item in item.src -%}
         {{ src_item + " " }} 
     {%- endfor %}
   {% endif %}
-{% endmacro %}
+{%- endmacro %}
 {#
   Define pathAttribute
 #}
@@ -90,17 +74,19 @@ fi
   Define retention pattern
 #}
 {% macro retention_pattern(repo) -%}
-  {% if repo.keep_last is defined and repo.keep_last != None %}--keep-last {{ item.keep_last }}{% endif %} \
-  {% if repo.keep_hourly is defined and repo.keep_hourly != None %}--keep-hourly {{ item.keep_hourly }}{% endif %} \
-  {% if repo.keep_daily is defined and repo.keep_daily != None %}--keep-daily {{ item.keep_daily }}{% endif %} \
-  {% if repo.keep_weekly is defined and repo.keep_weekly != None %}--keep-weekly {{ item.keep_weekly }}{% endif %} \
-  {% if repo.keep_monthly is defined and repo.keep_monthly != None %}--keep-monthly {{ item.keep_monthly }}{% endif %} \
-  {% if repo.keep_yearly is defined and repo.keep_yearly != None %}--keep-yearly {{ item.keep_yearly }}{% endif %} \
-  {% if repo.keep_within is defined and repo.keep_within != None %}--keep-within {{ item.keep_within }}{% endif %} \
+  {% if repo.keep_last is defined and repo.keep_last != None %}--keep-last {{ item.keep_last }} \{% endif %}
+  {% if repo.keep_hourly is defined and repo.keep_hourly != None %}--keep-hourly {{ item.keep_hourly }} \{% endif %}
+  {% if repo.keep_daily is defined and repo.keep_daily != None %}--keep-daily {{ item.keep_daily }} \{% endif %}
+  {% if repo.keep_weekly is defined and repo.keep_weekly != None %}--keep-weekly {{ item.keep_weekly }} \{% endif %}
+  {% if repo.keep_monthly is defined and repo.keep_monthly != None %}--keep-monthly {{ item.keep_monthly }} \{% endif %}
+  {% if repo.keep_yearly is defined and repo.keep_yearly != None %}--keep-yearly {{ item.keep_yearly }} \{% endif %}
+  {% if repo.keep_within is defined and repo.keep_within != None %}--keep-within {{ item.keep_within }} \{% endif %}
   {% if repo.keep_tag is defined and (repo.keep_tag|length>0) %}{{ keep_tags(repo.keep_tag) }}{% endif %}
 {%- endmacro %}
-
-{% macro exclude(exclude) %}
+{#
+  Define exclude macro
+#}
+{% macro exclude(exclude) -%}
     {% if exclude.exclude_cache is defined and exclude.exclude_cache == true %}
         --exclude-cache \
     {% endif %}
@@ -124,13 +110,32 @@ fi
             --exclude-if-present {{ path }} \
         {% endfor %}
     {% endif %}
-{% endmacro %}
+{%- endmacro %}
+
+{#
+  deletes log file if to big 
+#}
+{% if item.disable_logging is not defined or not item.disable_logging -%}
+# deletes log file if to big (default 500 KB max) 
+{% if item.max_result_log_size is defined -%}
+MAX_LOGSIZE={{ item.max_result_log_size }}
+{% else %}
+MAX_LOGSIZE=500000
+{% endif %}
+LOGSIZE=$(stat -c%s {{ result_log }})
+echo "Size of result log is $LOGSIZE bytes."
+if [[ "$LOGSIZE" -gt "$MAX_LOGSIZE" ]]
+then
+  echo "Result log will be deleted."
+  rm {{ result_log}}
+fi
+{%- endif %}
 
 {#
   Define beforeScript execution 
 #}
 {% if item.before_script is defined -%}
-# before script
+# before script 
 source {{ restic_script_dir }}/backup-{{ item.name }}-before.sh | tee {{ before_output_log }}
 if [[ $? -eq 0 ]]
 then
@@ -144,7 +149,7 @@ fi
 {#
   Define backup commands
 #}
-# backup command
+# backup command 
 if [[ "$STATUS" = "NO_ERROR" ]]
 then  
   if [[ -z ${CRON+x} ]]; then
@@ -178,7 +183,7 @@ fi
 {#
   Define stdin forget commands
 #}
-# forget command
+# forget command 
 if [[ "$STATUS" = "NO_ERROR" ]]
 then
   {{ restic_install_path }}/restic forget {{ path_attribute(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
@@ -195,7 +200,7 @@ fi
   Define notifyScript execution
 #}
 {% if item.notify_script is defined %}
-# notify script
+# notify script 
 source {{ restic_script_dir }}/backup-{{ item.name }}-notify.sh $STATUS | tee {{ notify_output_log }}
 if [[ $? -eq 0 ]]
 then
