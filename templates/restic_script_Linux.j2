@@ -15,6 +15,7 @@
 {% set notify_output_log = restic_log_dir + "/" + item.name + "-notify-output.log" %}
 {% set result_log = restic_log_dir + "/" + item.name + "-result.log" %}
 {% endif %}
+
 {#
   Include access file
 #}
@@ -23,6 +24,22 @@ source {{ restic_script_dir }}/access-{{ item.name }}.sh
 
 set -uxo pipefail
 STATUS="NO_ERROR"
+
+{% if item.disable_logging is not defined or not item.disable_logging -%}
+# deletes log file if to big (default 500 KB max)
+{% if item.max_result_log_size is defined %}
+MAX_LOGSIZE={{ item.max_result_log_size }}
+{% else %}
+MAX_LOGSIZE=500000
+{% endif %}
+LOGSIZE=$(stat -c%s {{ result_log }})
+echo "Size of result log is $LOGSIZE bytes."
+if [[ "$LOGSIZE" -gt "$MAX_LOGSIZE" ]]
+then
+  echo "Result log will be deleted."
+  rm {{ result_log}}
+fi
+{%- endif %}
 {#
   Define Tags
 #}
