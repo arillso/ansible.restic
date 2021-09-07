@@ -51,10 +51,10 @@
     - item.before_script is defined
     - item.repo in restic_repos
 
-- name: create after script
+- name: create notify script
   copy:
-    content: "{{ item.after_script }}"
-    dest: '{{ restic_script_dir }}/backup-{{ item.name }}-after.sh'
+    content: "{{ item.notify_script }}"
+    dest: '{{ restic_script_dir }}/backup-{{ item.name }}-notify.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
@@ -62,7 +62,7 @@
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
-    - item.after_script is defined
+    - item.notify_script is defined
     - item.repo in restic_repos
 
 - name: Setup CRON jobs

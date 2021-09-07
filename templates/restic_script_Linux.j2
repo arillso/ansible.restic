@@ -3,15 +3,17 @@
 # Backup script for {{ item.src|default('stdin') }}
 # Use this file to create a Backup and prune existing data with one execution.
 {% if item.disable_logging is defined and item.disable_logging %}
-{% set backup_result_log, backup_output_log = "/dev/null", "/dev/null" %}
-{% set forget_result_log, forget_output_log = "/dev/null", "/dev/null" %}
-{% set before_result_log, before_output_log = "/dev/null", "/dev/null" %}
-{% set after_result_log, after_output_log = "/dev/null", "/dev/null" %}
+{% set backup_output_log = "/dev/null" %}
+{% set forget_output_log = "/dev/null" %}
+{% set before_output_log = "/dev/null" %}
+{% set notify_output_log = "/dev/null" %}
+{% set result_log = "/dev/null" %}
 {% else %}
-{% set backup_result_log, backup_output_log = restic_log_dir + "/" + item.name + "-backup-result.log", restic_log_dir + "/" + item.name + "-backup-output.log" %}
-{% set forget_result_log, forget_output_log = restic_log_dir + "/" + item.name + "-forget-result.log", restic_log_dir + "/" + item.name + "-forget-output.log" %}
-{% set before_result_log, before_output_log = restic_log_dir + "/" + item.name + "-before-result.log", restic_log_dir + "/" + item.name + "-before-output.log" %}
-{% set after_result_log, after_output_log = restic_log_dir + "/" + item.name + "-after-result.log", restic_log_dir + "/" + item.name + "-after-output.log" %}
+{% set backup_output_log = restic_log_dir + "/" + item.name + "-backup-output.log" %}
+{% set forget_output_log = restic_log_dir + "/" + item.name + "-forget-output.log" %}
+{% set before_output_log = restic_log_dir + "/" + item.name + "-before-output.log" %}
+{% set notify_output_log = restic_log_dir + "/" + item.name + "-notify-output.log" %}
+{% set result_log = restic_log_dir + "/" + item.name + "-result.log" %}
 {% endif %}
 {#
   Include access file
@@ -115,9 +117,9 @@ STATUS="NO_ERROR"
 source {{ restic_script_dir }}/backup-{{ item.name }}-before.sh | tee {{ before_output_log }}
 if [[ $? -eq 0 ]]
 then
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ before_result_log }}
+    echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t OK" >> {{ result_log }}
 else
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ before_result_log }}
+    echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t ERROR" >> {{ result_log }}
     STATUS="beforeScript_failed"
 fi
 {% endif %}
@@ -149,9 +151,9 @@ then
   {% endif %} | tee {{ backup_output_log }}
   if [[ $? -eq 0 ]]
   then
-      echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ backup_result_log }}
+      echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') backup command:\t OK" >> {{ result_log }}
   else
-      echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ backup_result_log }}
+      echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') backup command:\t ERROR" >> {{ result_log }}
       STATUS="backup_failed"
   fi
 fi
@@ -165,23 +167,23 @@ then
   {{ restic_install_path }}/restic forget {{ path_attribute(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
   if [[ $? -eq 0 ]]
   then
-      echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ forget_result_log }}
+      echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t OK" >> {{ result_log }}
   else
-      echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ forget_result_log }}
+      echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t ERROR" >> {{ result_log }}
       STATUS="forget_failed"
   fi
 fi
 
 {#
-  Define aftereScript execution
+  Define notifyScript execution
 #}
-{% if item.after_script is defined %}
-# after script
-source {{ restic_script_dir }}/backup-{{ item.name }}-after.sh $STATUS | tee {{ after_output_log }}
+{% if item.notify_script is defined %}
+# notify script
+source {{ restic_script_dir }}/backup-{{ item.name }}-notify.sh $STATUS | tee {{ notify_output_log }}
 if [[ $? -eq 0 ]]
 then
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ after_result_log }}
+    echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') notify script:\t OK" >> {{ result_log }}
 else
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ after_result_log }}
+    echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') notify script:\t ERROR" >> {{ result_log }}
 fi
 {% endif %}
