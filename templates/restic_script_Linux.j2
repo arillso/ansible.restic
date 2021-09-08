@@ -20,7 +20,7 @@
   Include access file
 #}
 # Include access file
-source {{ restic_script_dir }}/access-{{ item.name }}.sh
+source {{ restic_script_dir }}/access-{{ item.repo }}.sh
 
 set -uxo pipefail
 STATUS="NO_ERROR"
@@ -136,7 +136,7 @@ fi
 #}
 {% if item.before_script is defined -%}
 # before script 
-source {{ restic_script_dir }}/backup-{{ item.name }}-before.sh | tee {{ before_output_log }}
+source {{ restic_script_dir }}/{{ item.name }}/before.sh | tee {{ before_output_log }}
 if [[ $? -eq 0 ]]
 then
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t OK" >> {{ result_log }}
@@ -209,7 +209,7 @@ fi
 #}
 {% if item.notify_script is defined %}
 # notify script 
-source {{ restic_script_dir }}/backup-{{ item.name }}-notify.sh $STATUS | tee {{ notify_output_log }}
+source {{ restic_script_dir }}/{{ item.name }}/notify.sh $STATUS | tee {{ notify_output_log }}
 if [[ $? -eq 0 ]]
 then
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') notify script:\t OK" >> {{ result_log }}

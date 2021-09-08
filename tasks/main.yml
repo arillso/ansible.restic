@@ -1,6 +1,12 @@
 ---
 # tasks file for skeleton
 
+- name: reformat dict if necessary
+  set_fact:
+    restic_backups: "{{ restic_backups|dict2items|json_query('[*].value') }}"
+  when:
+    - restic_backups | type_debug == "dict"
+
 - name: add OS specific variables
   include_vars: '{{ loop_vars }}'
   with_first_found:
@@ -31,6 +37,15 @@
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   with_items: '{{ restic_create_paths }}'
+
+- name: Ensure backup script directories exist
+  file:
+    state: 'directory'
+    path: '{{ restic_script_dir }}/{{ item.name }}-backup'
+    mode: '0755'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
+  with_items: '{{ restic_backups }}'
 
 - name: Check if downloaded binary is present
   stat:

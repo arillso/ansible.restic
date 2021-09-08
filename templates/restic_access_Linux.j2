@@ -26,4 +26,3 @@ export AZURE_ACCOUNT_NAME={{ restic_repos[item.repo].azure_account_name }}
 {% if restic_repos[item.repo].azure_account_key is defined %}
 export AZURE_ACCOUNT_KEY={{ restic_repos[item.repo].azure_account_key }}
 {% endif %}
-BACKUP_NAME={{ item.name }}

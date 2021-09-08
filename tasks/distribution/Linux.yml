@@ -1,16 +1,10 @@
 ---
 # tasks file for skeleton
 
-- name: reformat dict if necessary
-  set_fact:
-    restic_backups: "{{ restic_backups|dict2items|json_query('[*].value') }}"
-  when:
-    - restic_backups | type_debug == "dict"
-
 - name: Create backup credentials
   template:
     src: restic_access_Linux.j2
-    dest: '{{ restic_script_dir }}/access-{{ item.name }}.sh'
+    dest: '{{ restic_script_dir }}/access-{{ item.repo }}.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
@@ -25,7 +19,7 @@
 - name: Create backup script
   template:
     src: restic_script_Linux.j2
-    dest: '{{ restic_script_dir }}/backup-{{ item.name }}.sh'
+    dest: '{{ restic_script_dir }}/{{ item.name }}-backup/backup.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
@@ -42,7 +36,7 @@
 - name: create before script
   copy:
     content: "{{ item.before_script }}"
-    dest: '{{ restic_script_dir }}/backup-{{ item.name }}-before.sh'
+    dest: '{{ restic_script_dir }}/{{ item.name }}-backup/before.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
@@ -56,7 +50,7 @@
 - name: create notify script
   copy:
     content: "{{ item.notify_script }}"
-    dest: '{{ restic_script_dir }}/backup-{{ item.name }}-notify.sh'
+    dest: '{{ restic_script_dir }}/{{ item.name }}-backup/notify.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
@@ -70,7 +64,7 @@
 - name: Setup CRON jobs
   cron:
     name: 'arillso.restic backup {{ item.name }}'
-    job: 'CRON=true {{ restic_script_dir }}/backup-{{ item.name }}.sh'
+    job: 'CRON=true {{ restic_script_dir }}/{{ item.name }}-backup/backup.sh'
     minute: '{{ item.schedule_minute | default("*") }}'
     hour: '{{ item.schedule_hour | default("*") }}'
     weekday: '{{ item.schedule_weekday | default("*") }}'
