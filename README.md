@@ -129,6 +129,8 @@ Available variables:
 | `stdin`            |              no               | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)?                                                      |
 | `stdin_cmd`        | no (yes if `stdin` == `true`) | The command to produce the stdin.                                                                                                                                            |
 | `stdin_filename`   |              no               | The filename used in the repository.                                                                                                                                         |
+| `before_script`             |              no               | Content for a script, that will be executed before the backup command.                                                                                                                                                         |
+| `after_script`             |              no               | Content for a script, that will be executed after the backup and forget command command.                                                                                                                                                         |
 | `tags`             |              no               | Array of default tags                                                                                                                                                        |
 | `keep_last`        |              no               | If set, only keeps the last n snapshots.                                                                                                                                     |
 | `keep_hourly`      |              no               | If set, only keeps the last n hourly snapshots.                                                                                                                              |
@@ -144,6 +146,8 @@ Available variables:
 | `schedule_hour`    |           no (`*`)            | Hour when the job is run. ( 0-23, *, */2, etc )                                                                                                                              |
 | `schedule_weekday` |           no (`*`)            | Weekday when the job is run.  ( 0-6 for Sunday-Saturday, *, etc )                                                                                                            |
 | `schedule_month`   |           no (`*`)            | Month when the job is run. ( 1-12, *, */2, etc )                                                                                                                             |
+| `disable_logging`          |           no (`false`)           | Allows you to enable/disable the logging.                                                                                            |
+| `max_result_log_size`          |           no (`500000`)           | Allows you to specify max result log file size. Default deletes the result log file if it is bigger than 500 KB.                                                                                            |
 | `exclude`          |           no (`{}`)           | Allows you to specify files to exclude. See [Exclude](#exclude) for reference.                                                                                               |
 
 Example:
@@ -153,6 +157,8 @@ restic_backups:
     name: data
     repo: remote
     src: /path/to/data
+    before_script: "{{ lookup('file', 'beforeScript.sh') }}"
+    after_script: "{{ lookup('file', 'afterScript.sh') }}"
     scheduled: true
     schedule_hour: 3
 ```
