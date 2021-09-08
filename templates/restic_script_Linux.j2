@@ -24,6 +24,7 @@ source {{ restic_script_dir }}/access-{{ item.name }}.sh
 
 set -uxo pipefail
 STATUS="NO_ERROR"
+
 {#
   Define Tags
 #}
@@ -56,7 +57,7 @@ STATUS="NO_ERROR"
     {% for src_item in item.src -%}
         {{ src_item + " " }} 
     {%- endfor %}
-  {% endif %}
+  {%- endif %}
 {%- endmacro %}
 {#
   Define pathAttribute
@@ -111,7 +112,6 @@ STATUS="NO_ERROR"
         {% endfor %}
     {% endif %}
 {%- endmacro %}
-
 {#
   deletes log file if to big 
 #}
@@ -119,18 +119,18 @@ STATUS="NO_ERROR"
 # deletes log file if to big (default 500 KB max) 
 {% if item.max_result_log_size is defined -%}
 MAX_LOGSIZE={{ item.max_result_log_size }}
-{% else %}
+{% else -%}
 MAX_LOGSIZE=500000
-{% endif %}
+{%- endif %}
 LOGSIZE=$(stat -c%s {{ result_log }})
 echo "Size of result log is $LOGSIZE bytes."
-if [[ "$LOGSIZE" -gt "$MAX_LOGSIZE" ]]
+if [[ "$LOGSIZE" -gt "$MAX_LOGSIZE" ]] 
 then
   echo "Result log will be deleted."
   rm {{ result_log}}
 fi
-{%- endif %}
 
+{% endif -%}
 {#
   Define beforeScript execution 
 #}
@@ -144,8 +144,8 @@ else
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t ERROR" >> {{ result_log }}
     STATUS="beforeScript_failed"
 fi
-{% endif %}
 
+{% endif -%}
 {#
   Define backup commands
 #}
@@ -163,12 +163,12 @@ then
       --stdin $MODE_TAG \
       {{ tags(item.tags) }} \
       {{ stdin_filename(item.stdin_filename) }} \
-      {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
+      {% if item.exclude is defined %}{{ exclude(item.exclude) }} \{% endif %}
       $@ \
   {% else %}
-    {{ restic_install_path }}/restic backup {{ backup_src_list(item) }} $MODE_TAG \
+    {{ restic_install_path }}/restic backup {{ backup_src_list(item) }}$MODE_TAG \
       {{ tags(item.tags) }} \
-      {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
+      {% if item.exclude is defined %}{{ exclude(item.exclude) }} \{% endif %}
       $@ \
   {% endif %} | tee {{ backup_output_log }}
   if [[ $? -eq 0 ]]
@@ -186,7 +186,10 @@ fi
 # forget command 
 if [[ "$STATUS" = "NO_ERROR" ]]
 then
-  {{ restic_install_path }}/restic forget {{ path_attribute(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
+  {{ restic_install_path }}/restic forget {{ path_attribute(item) }} \
+  {{ retention_pattern(item) }}
+  {% if item.prune is defined and item.prune == true -%}--prune{%- endif %}
+   | tee {{ forget_output_log }}
   if [[ $? -eq 0 ]]
   then
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t OK" >> {{ result_log }}
