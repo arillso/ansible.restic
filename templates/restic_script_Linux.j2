@@ -159,18 +159,21 @@ then
   fi
 
   {% if item.stdin is defined and item.stdin == true %}
-    {{ item.stdin_cmd }} | {{ restic_install_path }}/restic backup \
-      --stdin $MODE_TAG \
-      {{ tags(item.tags) }} \
-      {{ stdin_filename(item.stdin_filename) }} \
-      {% if item.exclude is defined %}{{ exclude(item.exclude) }} \{% endif %}
-      $@ \
+  {{ item.stdin_cmd }} | {{ restic_install_path }}/restic backup \
+  --stdin $MODE_TAG \
+  {{ tags(item.tags) }} \
+  {{ stdin_filename(item.stdin_filename) }} \
+  {% if item.exclude is defined %}{{ exclude(item.exclude) }} \{% endif %}
+  $@ \
   {% else %}
-    {{ restic_install_path }}/restic backup {{ backup_src_list(item) }}$MODE_TAG \
-      {{ tags(item.tags) }} \
-      {% if item.exclude is defined %}{{ exclude(item.exclude) }} \{% endif %}
-      $@ \
-  {% endif %} | tee {{ backup_output_log }}
+  {{ restic_install_path }}/restic backup {{ backup_src_list(item) }}\
+  $MODE_TAG \
+  {% if item.tags is defined %}{{ tags(item.tags) }} \ {% endif %}
+  {% if item.exclude is defined %}{{ exclude(item.exclude) }} \ {% endif %}
+  $@ \
+  {% endif %}
+  | tee {{ backup_output_log }}
+
   if [[ $? -eq 0 ]]
   then
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') backup command:\t OK" >> {{ result_log }}
@@ -186,10 +189,12 @@ fi
 # forget command 
 if [[ "$STATUS" = "NO_ERROR" ]]
 then
-  {{ restic_install_path }}/restic forget {{ path_attribute(item) }} \
+  {{ restic_install_path }}/restic forget {{ path_attribute(item) }}\
   {{ retention_pattern(item) }}
-  {% if item.prune is defined and item.prune == true -%}--prune{%- endif %}
-   | tee {{ forget_output_log }}
+  {% if item.prune is defined and item.prune == true %}
+  --prune \
+  {% endif %}
+  | tee {{ forget_output_log }}
   if [[ $? -eq 0 ]]
   then
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t OK" >> {{ result_log }}
