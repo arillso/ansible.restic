@@ -160,8 +160,8 @@ restic_backups:
     repo: remote
     src: 
       - /path/to/data
-    before_script: "{{ lookup('file', 'beforeScript.sh') }}"
-    after_script: "{{ lookup('file', 'afterScript.sh') }}"
+    before_script: "{{ lookup('file', 'before-script.sh') }}"
+    notify_script: "{{ lookup('file', 'notify-cript.sh') }}"
     scheduled: true
     schedule_hour: 3
 ```
@@ -188,8 +188,42 @@ exclude:
 Please refer to the use of the specific keys to the
 [documentation](https://restic.readthedocs.io/en/latest/040_backup.html#excluding-files).
 
+#### Before Script
+The `before_script` key on a backup allows you to specify content for an script which will executed before all backup commands.
+The content can be specified in an extra file an loaded like that:
+ `before_script: "{{ lookup('file', 'before_script.sh') }}"`
+
+This script can be used for example to create an db-dump before the backup.
+
+#### Notify Script
+The `notifiy_script` key on a backup allows you to specify content for an script which will executed after all backup commands.
+The content can be specified in an extra file an loaded like that:
+ `notifiy_script: "{{ lookup('file', 'notifiy_script.sh') }}"`
+
+The noify_script will be executed with an parameter which shows the status of the backup process.
+
+| Code | Description |
+| ---- | ----------- |
+| "NO_ERROR" | all good |
+| "BEFORE_SCRIPT_FAILED" | before scirpt has failed, so backup and forget will not be executed |
+| "BACKUP_FAILED" | restic backup command has failed, so forget will not be executed |
+| "FORGET_FAILED" | restic forget command has failed |
+
+The passed status parameter can be handled like this:
+```bash
+#!/bin/sh
+echo "afterScript"
+
+if [[ "$1" = "NO_ERROR" ]]
+then
+    echo "No Error!"
+else
+    echo "Errors:" $1
+fi
+```
+
 #### Notify Zabbix
-the `notify_zabix` key on a backup allows you to specify details to notify an Zabbix Server after each backup run. You can specify the follwing keys:
+The `notify_zabix` key on a backup allows you to specify details to notify an Zabbix Server after each backup run. You can specify the follwing keys:
 ```yaml
 notify_zabbix:
     serverHost: 192.168.1.5

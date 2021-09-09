@@ -143,7 +143,7 @@ then
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t OK" >> {{ result_log }}
 else
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t ERROR" >> {{ result_log }}
-    STATUS="before_script_failed"
+    STATUS="BEFORE_SCRIPT_FAILED"
 fi
 
 {% endif -%}
@@ -181,7 +181,7 @@ printf "\n\n################## backup command ##################\n"
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') backup command:\t OK" >> {{ result_log }}
   else
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') backup command:\t ERROR" >> {{ result_log }}
-      STATUS="backup_failed"
+      STATUS="BACKUP_FAILED"
   fi
 fi
 
@@ -203,7 +203,7 @@ printf "\n\n################## forget command ##################\n"
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t OK" >> {{ result_log }}
   else
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t ERROR" >> {{ result_log }}
-      STATUS="forget_failed"
+      STATUS="FORGET_FAILED"
   fi
 fi
 
