@@ -61,6 +61,13 @@
     - item.notify_script is defined
     - item.repo in restic_repos
 
+- name: zabbix notification
+  include: '../zabbix.yml'
+  with_items: '{{ restic_backups }}'
+  when:
+    - item.notify_zabbix is defined
+    - item.repo in restic_repos
+
 - name: Setup CRON jobs
   cron:
     name: 'arillso.restic backup {{ item.name }}'

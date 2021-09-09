@@ -22,7 +22,6 @@
 # Include access file
 source {{ restic_script_dir }}/access-{{ item.repo }}.sh
 
-set -uxo pipefail
 STATUS="NO_ERROR"
 
 {#
@@ -117,6 +116,7 @@ STATUS="NO_ERROR"
 #}
 {% if item.disable_logging is not defined or not item.disable_logging -%}
 # deletes log file if to big (default 500 KB max) 
+printf "################## cleanup result log ##################\n"
 {% if item.max_result_log_size is defined -%}
 MAX_LOGSIZE={{ item.max_result_log_size }}
 {% else -%}
@@ -136,13 +136,14 @@ fi
 #}
 {% if item.before_script is defined -%}
 # before script 
-source {{ restic_script_dir }}/{{ item.name }}/before.sh | tee {{ before_output_log }}
+printf "\n\n################## before script ##################\n"
+bash {{ restic_script_dir }}/{{ item.name }}-backup/before.sh |& tee {{ before_output_log }}
 if [[ $? -eq 0 ]]
 then
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t OK" >> {{ result_log }}
 else
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t ERROR" >> {{ result_log }}
-    STATUS="beforeScript_failed"
+    STATUS="before_script_failed"
 fi
 
 {% endif -%}
@@ -152,6 +153,7 @@ fi
 # backup command 
 if [[ "$STATUS" = "NO_ERROR" ]]
 then  
+printf "\n\n################## backup command ##################\n"
   if [[ -z ${CRON+x} ]]; then
     MODE_TAG="--tag manual"
   else
@@ -172,7 +174,7 @@ then
   {% if item.exclude is defined %}{{ exclude(item.exclude) }} \ {% endif %}
   $@ \
   {% endif %}
-  | tee {{ backup_output_log }}
+  |& tee {{ backup_output_log }}
 
   if [[ $? -eq 0 ]]
   then
@@ -189,12 +191,13 @@ fi
 # forget command 
 if [[ "$STATUS" = "NO_ERROR" ]]
 then
+printf "\n\n################## forget command ##################\n"
   {{ restic_install_path }}/restic forget {{ path_attribute(item) }}\
   {{ retention_pattern(item) }}
   {% if item.prune is defined and item.prune == true %}
   --prune \
   {% endif %}
-  | tee {{ forget_output_log }}
+  |& tee {{ forget_output_log }}
   if [[ $? -eq 0 ]]
   then
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t OK" >> {{ result_log }}
@@ -209,11 +212,22 @@ fi
 #}
 {% if item.notify_script is defined %}
 # notify script 
-source {{ restic_script_dir }}/{{ item.name }}/notify.sh $STATUS | tee {{ notify_output_log }}
+printf "\n\n################## notify script ##################\n"
+bash {{ restic_script_dir }}/{{ item.name }}-backup/notify.sh $STATUS |& tee {{ notify_output_log }}
 if [[ $? -eq 0 ]]
 then
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') notify script:\t OK" >> {{ result_log }}
 else
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') notify script:\t ERROR" >> {{ result_log }}
 fi
+{% endif %}
+
+{#
+  Define notify zabbix execution
+#}
+{% if item.notify_zabbix is defined %}
+# notify zabbix 
+printf "\n\n################## notify zabbix ##################\n"
+bash {{ restic_script_dir }}/zabbix-sender.sh -z {{ item.notify_zabbix.serverHost }} -p {{ item.notify_zabbix.serverPort }} -s {{ item.notify_zabbix.host }} -k {{ item.notify_zabbix.key }} -o $STATUS 
+echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') zabbix req done" >> {{ result_log }}
 {% endif %}

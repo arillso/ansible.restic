@@ -1,0 +1,15 @@
+---
+
+- name: create zabbix-sender script
+  copy:
+    src: "templates/zabbix-sender.sh"
+    dest: '{{ restic_script_dir }}/zabbix-sender.sh'
+    mode: '0700'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
+  no_log: true
+
+- name: install netcat
+  package:
+    name: netcat
+    state: present

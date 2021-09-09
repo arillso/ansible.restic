@@ -125,12 +125,14 @@ Available variables:
 | ------------------ |:-----------------------------:| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`             |              yes              | The name of this backup. Used together with pruning and scheduling and needs to be unique.                                                                                   |
 | `repo`             |              yes              | The name of the repository to backup to.                                                                                                                                     |
-| `src`              |              yes              | The source directory or file                                                                                                                                                 |
+| `src`              |              yes              | List of the source directories or files                                                                                                                                                 |
 | `stdin`            |              no               | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)?                                                      |
 | `stdin_cmd`        | no (yes if `stdin` == `true`) | The command to produce the stdin.                                                                                                                                            |
 | `stdin_filename`   |              no               | The filename used in the repository.                                                                                                                                         |
 | `before_script`             |              no               | Content for a script, that will be executed before the backup command.                                                                                                                                                         |
-| `after_script`             |              no               | Content for a script, that will be executed after the backup and forget command command.                                                                                                                                                         |
+| `notify_script`             |              no               | Content for a notify, that will be executed after the backup and forget command command.                                                                                                                                                         |
+| `notify_zabbix`             |              no               | Details to notify an Zabbix Server after each backup run.                                                                                                                                                          |
+
 | `tags`             |              no               | Array of default tags                                                                                                                                                        |
 | `keep_last`        |              no               | If set, only keeps the last n snapshots.                                                                                                                                     |
 | `keep_hourly`      |              no               | If set, only keeps the last n hourly snapshots.                                                                                                                              |
@@ -156,7 +158,8 @@ restic_backups:
   data:
     name: data
     repo: remote
-    src: /path/to/data
+    src: 
+      - /path/to/data
     before_script: "{{ lookup('file', 'beforeScript.sh') }}"
     after_script: "{{ lookup('file', 'afterScript.sh') }}"
     scheduled: true
@@ -184,6 +187,16 @@ exclude:
 ```
 Please refer to the use of the specific keys to the
 [documentation](https://restic.readthedocs.io/en/latest/040_backup.html#excluding-files).
+
+#### Notify Zabbix
+the `notify_zabix` key on a backup allows you to specify details to notify an Zabbix Server after each backup run. You can specify the follwing keys:
+```yaml
+notify_zabbix:
+    serverHost: 192.168.1.5
+    serverPort: 10051
+    host: fooBar
+    key: fooBarBackupState
+```
 
 ## Dependencies
 none
