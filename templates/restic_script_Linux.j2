@@ -8,12 +8,14 @@
 {% set before_output_log = "/dev/null" %}
 {% set notify_output_log = "/dev/null" %}
 {% set result_log = "/dev/null" %}
+{% set state_log = "/dev/null" %}
 {% else %}
 {% set backup_output_log = restic_log_dir + "/" + item.name + "-backup-output.log" %}
 {% set forget_output_log = restic_log_dir + "/" + item.name + "-forget-output.log" %}
 {% set before_output_log = restic_log_dir + "/" + item.name + "-before-output.log" %}
 {% set notify_output_log = restic_log_dir + "/" + item.name + "-notify-output.log" %}
 {% set result_log = restic_log_dir + "/" + item.name + "-result.log" %}
+{% set state_log = restic_log_dir + "/" + item.name + ".state" %}
 {% endif %}
 
 {#
@@ -23,6 +25,7 @@
 source {{ restic_script_dir }}/access-{{ item.repo }}.sh
 
 STATUS="NO_ERROR"
+set -uo pipefail
 
 {#
   Define Tags
@@ -138,7 +141,7 @@ fi
 # before script 
 printf "\n\n################## before script ##################\n"
 bash {{ restic_script_dir }}/{{ item.name }}-backup/before.sh |& tee {{ before_output_log }}
-if [[ $? -eq 0 ]]
+if [ $? -eq 0 ]
 then
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') before script:\t OK" >> {{ result_log }}
 else
@@ -176,7 +179,7 @@ printf "\n\n################## backup command ##################\n"
   {% endif %}
   |& tee {{ backup_output_log }}
 
-  if [[ $? -eq 0 ]]
+  if [ $? -eq 0 ]
   then
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') backup command:\t OK" >> {{ result_log }}
   else
@@ -198,7 +201,7 @@ printf "\n\n################## forget command ##################\n"
   --prune \
   {% endif %}
   |& tee {{ forget_output_log }}
-  if [[ $? -eq 0 ]]
+  if [ $? -eq 0 ]
   then
       echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') forget command:\t OK" >> {{ result_log }}
   else
@@ -208,13 +211,22 @@ printf "\n\n################## forget command ##################\n"
 fi
 
 {#
+  passiv zabbix check
+#}
+{% if item.passive_zabbix_check is defined %}
+# passive zabbix check
+printf "\n\n################## passive zabbix check ##################\n"
+echo -e "$STATUS" |& tee {{ state_log }}
+{% endif %}
+
+{#
   Define notifyScript execution
 #}
 {% if item.notify_script is defined %}
 # notify script 
 printf "\n\n################## notify script ##################\n"
 bash {{ restic_script_dir }}/{{ item.name }}-backup/notify.sh $STATUS |& tee {{ notify_output_log }}
-if [[ $? -eq 0 ]]
+if [ $? -eq 0 ]
 then
     echo -e "$(date -u '+%Y-%m-%d %H:%M:%S') notify script:\t OK" >> {{ result_log }}
 else

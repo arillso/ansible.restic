@@ -1,0 +1,8 @@
+[
+{% for item in restic_backups %}
+{% if item.passive_zabbix_check is defined and item.passive_zabbix_check %}
+        {% raw %}{ "{#BACKUP}": "{% endraw %}{{ item.name }}{% raw %}"},{% endraw %}
+
+{% endif %}
+{% endfor %}
+]

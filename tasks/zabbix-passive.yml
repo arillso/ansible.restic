@@ -1,0 +1,10 @@
+---
+
+- name: create zabbix backups JSON
+  template:
+    src: zabbix_backups_Linux.j2
+    dest: '{{ restic_script_dir }}/backups.json'
+    mode: '0700'
+    owner: '{{ restic_dir_owner }}'
+    group: '{{ restic_dir_group }}'
+  no_log: false

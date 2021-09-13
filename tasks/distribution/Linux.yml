@@ -68,6 +68,13 @@
     - item.notify_zabbix is defined
     - item.repo in restic_repos
 
+- name: zabbix passive check
+  include: '../zabbix-passive.yml'
+  with_items: '{{ restic_backups }}'
+  when:
+    - item.passive_zabbix_check is defined
+    - item.repo in restic_repos
+
 - name: Setup CRON jobs
   cron:
     name: 'arillso.restic backup {{ item.name }}'
