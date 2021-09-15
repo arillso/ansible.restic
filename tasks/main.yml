@@ -45,6 +45,7 @@
     mode: '0755'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
+  no_log: true
   with_items: '{{ restic_backups }}'
 
 - name: Check if downloaded binary is present
