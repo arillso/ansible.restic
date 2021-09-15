@@ -25,7 +25,7 @@
     group: '{{ restic_dir_group }}'
     lstrip_blocks: yes
     trim_blocks: yes
-  no_log: false
+  no_log: true
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
