@@ -64,6 +64,7 @@
 - name: zabbix notification
   include: '../zabbix.yml'
   with_items: '{{ restic_backups }}'
+  no_log: true
   when:
     - item.notify_zabbix is defined
     - item.repo in restic_repos
@@ -71,6 +72,7 @@
 - name: zabbix passive check
   include: '../zabbix-passive.yml'
   with_items: '{{ restic_backups }}'
+  no_log: true
   when:
     - item.passive_zabbix_check is defined
     - item.repo in restic_repos
