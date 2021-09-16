@@ -124,7 +124,7 @@ printf "################## cleanup result log ##################\n"
 MAX_LOGSIZE={{ item.max_result_log_size }}
 {% else -%}
 MAX_LOGSIZE=500000
-{%- endif %}
+{% endif %}
 LOGSIZE=$(stat -c%s {{ result_log }})
 echo "Size of result log is $LOGSIZE bytes."
 if [[ "$LOGSIZE" -gt "$MAX_LOGSIZE" ]] 
