@@ -101,22 +101,22 @@ set -uo pipefail
     {% endif %}
     {% if exclude.exclude is defined %}
         {% for path in exclude.exclude %}
-  --exclude {{ path }} \
+  --exclude={{ path }} \
         {% endfor %}
     {% endif %}
     {% if exclude.iexclude is defined %}
         {% for path in exclude.iexclude %}
-  --iexclude {{ path }} \
+  --iexclude={{ path }} \
         {% endfor %}
     {% endif %}
     {% if exclude.exclude_file is defined %}
         {% for path in exclude.exclude_file %}
-  --exclude-file {{ path }} \
+  --exclude-file={{ path }} \
         {% endfor %}
     {% endif %}
     {% if exclude.exclude_if_present is defined %}
         {% for path in exclude.exclude_if_present %}
-  --exclude-if-present {{ path }} \
+  --exclude-if-present={{ path }} \
         {% endfor %}
     {% endif %}
 {%- endmacro %}
@@ -182,10 +182,10 @@ printf "\n\n################## backup command ##################\n"
   {{ restic_install_path }}/restic backup {{ backup_src_list(item) }}\
   $MODE_TAG \
   {% if item.tags is defined %}
-  {{ tags(item.tags) }} \ 
+  {{ tags(item.tags) }} \
   {% endif %}
   {% if item.one_file_system is defined and item.one_file_system %}
-  --one-file-system \ 
+  --one-file-system \
   {% endif %}
   {% if item.exclude is defined -%}{{ exclude(item.exclude) }}{% endif %}
   $@ \
