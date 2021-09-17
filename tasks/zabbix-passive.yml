@@ -4,7 +4,7 @@
   template:
     src: zabbix_backups_Linux.j2
     dest: '{{ restic_script_dir }}/backups.json'
-    mode: '0700'
+    mode: '0704'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
   no_log: true
