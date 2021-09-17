@@ -168,6 +168,7 @@ printf "\n\n################## backup command ##################\n"
   --stdin $MODE_TAG \
   {{ tags(item.tags) }} \
   {{ stdin_filename(item.stdin_filename) }} \
+  {% if item.one_file_system is defined and item.one_file_system %}--one-file-system \{% endif %}
   {% if item.exclude is defined %}{{ exclude(item.exclude) }} \{% endif %}
   $@ \
   {% else %}
