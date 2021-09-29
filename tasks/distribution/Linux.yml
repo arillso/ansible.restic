@@ -24,7 +24,7 @@
 
 - name: Create backup script
   template:
-    src: restic_script_Linux.j2
+    src: "{{ restic_backup_script_template }}"
     dest: '{{ restic_script_dir }}/backup-{{ item.name }}.sh'
     mode: '0700'
     owner: '{{ restic_dir_owner }}'

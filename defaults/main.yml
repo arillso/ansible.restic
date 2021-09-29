@@ -12,3 +12,5 @@ restic_create_cron: false
 
 restic_dir_owner: '{{ ansible_user | default(ansible_user_id) }}'
 restic_dir_group: '{{ ansible_user | default(ansible_user_id) }}'
+
+restic_backup_script_template: restic_script_Linux.j2
