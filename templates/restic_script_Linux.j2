@@ -17,6 +17,8 @@
 {% set result_log = restic_log_dir + "/" + item.name + "-result.log" %}
 {% set state_log = restic_log_dir + "/" + item.name + ".state" %}
 {% endif %}
+# go garbage collector optimized
+export GOGC=20
 
 {#
   Include access file
