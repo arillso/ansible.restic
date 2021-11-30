@@ -6,9 +6,11 @@
 {% if item.disable_logging is defined and item.disable_logging %}
 {% set backup_result_log, backup_output_log = "/dev/null", "/dev/null" %}
 {% set forget_result_log, forget_output_log = "/dev/null", "/dev/null" %}
+{% set hooks_result_log, hooks_output_log = "/dev/null", "/dev/null" %}
 {% else %}
 {% set backup_result_log, backup_output_log = restic_log_dir + "/" + item.name + "-backup-result.log", restic_log_dir + "/" + item.name + "-backup-output.log" %}
 {% set forget_result_log, forget_output_log = restic_log_dir + "/" + item.name + "-forget-result.log", restic_log_dir + "/" + item.name + "-forget-output.log" %}
+{% set hooks_result_log, hooks_output_log = restic_log_dir + "/" + item.name + "-hooks-result.log", restic_log_dir + "/" + item.name + "-hooks-output.log" %}
 {% endif %}
 
 export RESTIC_REPOSITORY={{ restic_repos[item.repo].location }}
@@ -37,10 +39,15 @@ set -uxo pipefail
 {#
   Run pre backup commands
 #}
-
 {% if item.pre_backup_commands is defined %}
   {% for command in item.pre_backup_commands %}
-{{ command }}
+    {{ command }}
+    if [[ $? -eq 0 ]]
+    then
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK PRE BACKUP '${command::30}'" >> {{ hooks_result_log }}
+    else
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK PRE BACKUP '${command::30}'" >> {{ hooks_result_log }}
+    fi
   {% endfor %}
 {% endif %}
 
@@ -89,30 +96,31 @@ set -uxo pipefail
 {%- endmacro %}
 
 {% macro exclude(exclude) %}
-    {% if exclude.exclude_cache is defined and exclude.exclude_cache == true %}
-        --exclude-cache \
-    {% endif %}
-    {% if exclude.exclude is defined %}
-        {% for path in exclude.exclude %}
-            --exclude {{ path }} \
-        {% endfor %}
-    {% endif %}
-    {% if exclude.iexclude is defined %}
-        {% for path in exclude.iexclude %}
-            --iexclude {{ path }} \
-        {% endfor %}
-    {% endif %}
-    {% if exclude.exclude_file is defined %}
-        {% for path in exclude.exclude_file %}
-            --exclude-file {{ path }} \
-        {% endfor %}
-    {% endif %}
-    {% if exclude.exclude_if_present is defined %}
-        {% for path in exclude.exclude_if_present %}
-            --exclude-if-present {{ path }} \
-        {% endfor %}
-    {% endif %}
+  {% if exclude.exclude_cache is defined and exclude.exclude_cache == true %}
+    --exclude-cache \
+  {% endif %}
+  {% if exclude.exclude is defined %}
+    {% for path in exclude.exclude %}
+      --exclude {{ path }} \
+    {% endfor %}
+  {% endif %}
+  {% if exclude.iexclude is defined %}
+    {% for path in exclude.iexclude %}
+      --iexclude {{ path }} \
+    {% endfor %}
+  {% endif %}
+  {% if exclude.exclude_file is defined %}
+    {% for path in exclude.exclude_file %}
+      --exclude-file {{ path }} \
+    {% endfor %}
+  {% endif %}
+  {% if exclude.exclude_if_present is defined %}
+    {% for path in exclude.exclude_if_present %}
+      --exclude-if-present {{ path }} \
+    {% endfor %}
+  {% endif %}
 {% endmacro %}
+
 {#
   Define backup commands
 #}
@@ -135,30 +143,93 @@ fi
     {% if item.exclude is defined %}{{ exclude(item.exclude) }}{% endif %} \
     $@ \
 {% endif %} | tee {{ backup_output_log }}
+
 if [[ $? -eq 0 ]]
 then
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ backup_result_log }}
+  echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ backup_result_log }}
+  {#
+    Run post backup commands on success
+  #}
+  {% if item.post_backup_commands_on_success is defined %}
+    {% for command in item.post_backup_commands_on_success %}
+      {{ command }}
+      if [[ $? -eq 0 ]]
+      then
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+      else
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' ERROR" >> {{ hooks_result_log }}
+      fi
+    {% endfor %}
+  {% endif %}
 else
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ backup_result_log }}
+  echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ backup_result_log }}
+  {#
+    Run post backup commands on fail
+  #}
+  {% if item.post_backup_commands_on_fail is defined %}
+    {% for command in item.post_backup_commands_on_fail %}
+      {{ command }}
+      if [[ $? -eq 0 ]]
+      then
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+      else
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' ERROR" >> {{ bhooks_result_log }}
+      fi
+    {% endfor %}
+  {% endif %}
 fi
+
+{#
+  Run pre prune commands
+#}
+{% if item.pre_prune_commands is defined %}
+  {% for command in item.pre_prune_commands %}
+    {{ command }}
+    if [[ $? -eq 0 ]]
+    then
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK PRE PRUNE '${command::30}'" >> {{ hooks_result_log }}
+    else
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK PRE PRUNE '${command::30}'" >> {{ hooks_result_log }}
+    fi
+  {% endfor %}
+{% endif %}
 
 {#
   Define stdin forget commands
 #}
 {{ restic_install_path }}/restic forget --path {{ path(item) }} {{ retention_pattern(item) }} {% if item.prune is defined and item.prune == true %}--prune{% endif %} | tee {{ forget_output_log }}
+
 if [[ $? -eq 0 ]]
 then
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ forget_result_log }}
+  echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK" >> {{ forget_result_log }}
+  {#
+    Run post prune commands on success
+  #}
+  {% if item.post_prune_commands_on_success is defined %}
+    {% for command in item.post_prune_commands_on_success %}
+      {{ command }}
+      if [[ $? -eq 0 ]]
+      then
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+      else
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' ERROR" >> {{ hooks_result_log }}
+      fi
+    {% endfor %}
+  {% endif %}
 else
-    echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ forget_result_log }}
+  echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR" >> {{ forget_result_log }}
+  {#
+    Run post prune commands on fail
+  #}
+  {% if item.post_prune_commands_on_fail is defined %}
+    {% for command in item.post_prune_commands_on_fail %}
+      {{ command }}
+      if [[ $? -eq 0 ]]
+      then
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+      else
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' ERROR" >> {{ hooks_result_log }}
+      fi
+    {% endfor %}
+  {% endif %}
 fi
-
-{#
-  Run post backup commands
-#}
-
-{% if item.post_backup_commands is defined %}
-  {% for command in item.post_backup_commands %}
-{{ command }}
-  {% endfor %}
-{% endif %}

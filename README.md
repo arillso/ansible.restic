@@ -144,7 +144,11 @@ Available variables:
 | `schedule_month`       |           no (`*`)            | Month when the job is run. ( 1-12, *, */2, etc )                                                                                                                             |
 | `exclude`              |           no (`{}`)           | Allows you to specify files to exclude. See [Exclude](#exclude) for reference.                                                                                               |
 | `pre_backup_commands`  |              no               | Allows you to add a list of custom commands which are run before the backup in the context of the backup script.                                                             |
-| `post_backup_commands` |              no               | Allows you to add a list of  custom commands which are run after the backup in the context of the backup script.                                                             |
+| `post_backup_commands_on_success` |   no               | Allows you to add a list of custom commands which are run after a successful backup in the context of the backup script.                                                     |
+| `post_backup_commands_on_fail` |      no               | Allows you to add a list of custom commands which are run after a failed backup in the context of the backup script.                                                         |
+| `pre_prune_commands`  |               no               | Allows you to add a list of custom commands which are run before pruning in the context of the backup script.                                                                |
+| `post_prune_commands_on_success` |    no               | Allows you to add a list of custom commands which are run after a successful pruning in the context of the backup script.                                                    |
+| `post_prune_commands_on_fail` |       no               | Allows you to add a list of custom commands which are run after a failed pruning in the context of the backup script.                                                        |
 
 Example:
 ```yaml
@@ -155,10 +159,28 @@ restic_backups:
     scheduled: true
     schedule_hour: 3
     pre_backup_commands:
-      - mysqldump > /foo/bar.sql
-    post_backup_commands:
-      - curl healthchecks.yourdomain.com > /dev/null
+      - command 1
+      - command 2
+    post_backup_commands_on_fail:
+      - command 1
+      - command 2
+    post_backup_commands_on_success:
+      - command 1
+      - command 2
+    pre_pruning_commands:
+      - command 1
+      - command 2
+    post_pruning_commands_on_fail:
+      - command 1
+      - command 2
+    post_pruning_commands_on_success:
+      - command 1
+      - command 2
 ```
+
+> You can also specify restic_backups as an array, which is a legacy feature and
+> might be deprecated in the future. currently, the name key is used for
+> naming the access and backup files
 
 Example:
 ```yaml
@@ -170,14 +192,25 @@ restic_backups:
     scheduled: true
     schedule_hour: 3
     pre_backup_commands:
-      - mysqldump > /foo/bar.sql
-    post_backup_commands:
-      - curl healthchecks.yourdomain.com > /dev/null
+      - command 1
+      - command 2
+    post_backup_commands_on_fail:
+      - command 1
+      - command 2
+    post_backup_commands_on_success:
+      - command 1
+      - command 2
+    pre_pruning_commands:
+      - command 1
+      - command 2
+    post_pruning_commands_on_fail:
+      - command 1
+      - command 2
+    post_pruning_commands_on_success:
+      - command 1
+      - command 2
 ```
 
-> You can also specify restic_backups as an array, which is a legacy feature and
-> might be deprecated in the future. currently, the name key is used for
-> naming the access and backup files
 
 #### Exclude
 the `exclude` key on a backup allows you to specify multiple files to exclude or
