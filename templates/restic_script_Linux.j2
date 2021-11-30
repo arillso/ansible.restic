@@ -41,6 +41,7 @@ set -uxo pipefail
 #}
 {% if item.pre_backup_commands is defined %}
   {% for command in item.pre_backup_commands %}
+    command={{ command }}
     {{ command }}
     if [[ $? -eq 0 ]]
     then
@@ -152,12 +153,13 @@ then
   #}
   {% if item.post_backup_commands_on_success is defined %}
     {% for command in item.post_backup_commands_on_success %}
+      command="{{ command }}"
       {{ command }}
       if [[ $? -eq 0 ]]
       then
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK POST BACKUP SUCCESS ${command::30}" >> {{ hooks_result_log }}
       else
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' ERROR" >> {{ hooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK POST BACKUP SUCCESS ${command::30}" >> {{ hooks_result_log }}
       fi
     {% endfor %}
   {% endif %}
@@ -168,12 +170,13 @@ else
   #}
   {% if item.post_backup_commands_on_fail is defined %}
     {% for command in item.post_backup_commands_on_fail %}
+      command="{{ command }}"
       {{ command }}
       if [[ $? -eq 0 ]]
       then
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK POST BACKUP FAIL: ${command::30}" >> {{ hooks_result_log }}
       else
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' ERROR" >> {{ bhooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK POST BACKUP FAIL: ${command::30}" >> {{ bhooks_result_log }}
       fi
     {% endfor %}
   {% endif %}
@@ -184,12 +187,13 @@ fi
 #}
 {% if item.pre_prune_commands is defined %}
   {% for command in item.pre_prune_commands %}
+    command="{{ command }}"
     {{ command }}
     if [[ $? -eq 0 ]]
     then
-      echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK PRE PRUNE '${command::30}'" >> {{ hooks_result_log }}
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK PRE PRUNE: ${command::30}" >> {{ hooks_result_log }}
     else
-      echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK PRE PRUNE '${command::30}'" >> {{ hooks_result_log }}
+      echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK PRE PRUNE: ${command::30}" >> {{ hooks_result_log }}
     fi
   {% endfor %}
 {% endif %}
@@ -207,12 +211,13 @@ then
   #}
   {% if item.post_prune_commands_on_success is defined %}
     {% for command in item.post_prune_commands_on_success %}
+      command="{{ command }}"
       {{ command }}
       if [[ $? -eq 0 ]]
       then
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK POST PRUNE SUCCESS ${command::30}" >> {{ hooks_result_log }}
       else
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK '${command::30}' ERROR" >> {{ hooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK POST PRUNE SUCCESS ${command::30}" >> {{ hooks_result_log }}
       fi
     {% endfor %}
   {% endif %}
@@ -223,12 +228,13 @@ else
   #}
   {% if item.post_prune_commands_on_fail is defined %}
     {% for command in item.post_prune_commands_on_fail %}
+      command="{{ command }}"
       {{ command }}
       if [[ $? -eq 0 ]]
       then
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' OK" >> {{ hooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') OK HOOK POST PRUNE FAIL ${command::30}" >> {{ hooks_result_log }}
       else
-        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK '${command::30}' ERROR" >> {{ hooks_result_log }}
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S') ERROR HOOK POST PRUNE FAIL ${command::30}" >> {{ hooks_result_log }}
       fi
     {% endfor %}
   {% endif %}
