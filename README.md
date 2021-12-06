@@ -121,7 +121,7 @@ Available variables:
 
 | Name               | Required (Default)            | Description                                                                                                                                                                  |
 | ------------------ |:-----------------------------:| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`             | yes                           | Thspringer plane namspringer plane of this backup. Used together with pruning and scheduling and needs to be unique.                                                         |
+| `name`             | yes                           | The name of this backup. Used together with pruning and scheduling and needs to be unique.                                                         |
 | `repo`             | yes                           | The name of the repository to backup to.                                                                                                                                     |
 | `src`              | yes                           | The source directory or file                                                                                                                                                 |
 | `stdin`            | no                            | Is this backup created from a [stdin](https://restic.readthedocs.io/en/stable/040_backup.html#reading-data-from-stdin)?                                                      |
@@ -152,7 +152,7 @@ Available variables:
 Example:
 ```yaml
 restic_backups:
-  - name: data
+  data:
     repo: remote
     src: /path/to/data
     scheduled: true
@@ -180,6 +180,19 @@ restic_backups:
 > You can also specify restic_backups as an array, which is a legacy feature and
 > might be deprecated in the future. currently, the name key is used for
 > naming the access and backup files
+
+Example as array:
+```yaml
+restic_backups:
+  - data:
+    name: data
+    repo: remote
+    src: /path/to/data
+  - db:
+    name: db
+    repo: remote
+    src: /path/to/db
+```
 
 #### Exclude
 the `exclude` key on a backup allows you to specify multiple files to exclude or
