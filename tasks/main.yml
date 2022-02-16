@@ -43,11 +43,11 @@
   register: restic_installed
 
 - name: Install restic
-  include: 'install.yml'
+  include_tasks: 'install.yml'
   when: not restic_executable.stat.exists or not restic_installed.stat.exists
 
 - name: Configure restic
-  include: 'configure.yml'
+  include_tasks: 'configure.yml'
 
 - name: include distribution tasks
   include_tasks: '{{ loop_distribution }}'
