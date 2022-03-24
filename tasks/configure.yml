@@ -12,6 +12,8 @@
     AWS_DEFAULT_REGION: '{{ item.value.aws_default_region | default("") }}'
     B2_ACCOUNT_ID: '{{ item.value.b2_account_id | default("") }}'
     B2_ACCOUNT_KEY: '{{ item.value.b2_account_key | default("") }}'
+    AZURE_ACCOUNT_NAME: '{{ item.value.azure_account_name | default("") }}'
+    AZURE_ACCOUNT_KEY: '{{ item.value.azure_account_key | default("") }}'
   no_log: true
   register: restic_init
   changed_when: "'created restic repository' in restic_init.stdout"
