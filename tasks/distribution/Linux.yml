@@ -14,7 +14,6 @@
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
-  no_log: true
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
@@ -29,7 +28,6 @@
     mode: '0700'
     owner: '{{ restic_dir_owner }}'
     group: '{{ restic_dir_group }}'
-  no_log: true
   with_items: '{{ restic_backups }}'
   when:
     - item.name is defined
@@ -47,7 +45,6 @@
     month: '{{ item.schedule_month | default("*") }}'
     state: present
   become: true
-  no_log: true
   with_items: '{{ restic_backups }}'
   when:
     - restic_create_cron
